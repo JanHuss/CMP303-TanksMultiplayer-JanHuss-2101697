@@ -1,9 +1,0 @@
-﻿  main.cpp
-  NetworkSimulator.cpp
-  Tank.cpp
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\Lab_07_Prediction\PredictionExample\Tank.cpp(11,64): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\Lab_07_Prediction\PredictionExample\Tank.cpp(11,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\Lab_07_Prediction\PredictionExample\Tank.cpp(15,78): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\Lab_07_Prediction\PredictionExample\Tank.cpp(15,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Generating Code...
-  PredictionExample.vcxproj -> D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\Lab_07_Prediction\Debug\PredictionExample.exe
