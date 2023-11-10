@@ -5,6 +5,7 @@
 #include "Tank.h"
 #include "TankMessage.h"
 #include "Framework/Input.h"
+#include <vector>
 
 //Rounds a float to two decimal places and turns it into a string
 std::string Stringify( float value ) {
@@ -16,24 +17,36 @@ std::string Stringify( float value ) {
 }
 
 int main() {
-	sf::RenderWindow window(sf::VideoMode(640, 480), "CMP303 - Tanks Multiplayer - Jan Huss - 2101697");
+	//variables
+	int windowWidth = 640;
+	int windowHeight = 480;
+	std::vector<Tank> tank;
+
+	sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "CMP303 - Tanks Multiplayer - Jan Huss - 2101697");
 	window.setFramerateLimit(60);	//Request 60 frames per second
 	
 	//Create an Input opject
 	Input* input = new Input;
 
+	// Create a vector of tanks
+	tank.push_back(Tank("green", input)); // player 1
+	tank.push_back(Tank("blue", input)); // player 2
+	tank.push_back(Tank("red", input)); // player 3
+	tank.push_back(Tank("black", input)); // player 4
+
 	//Create two tanks (Can also accept "black" and "red")
-	Tank tanks[4]{ Tank("green", input), Tank("blue", input), Tank("red", input), Tank ("black", input)};
 
-	tanks[0].setPosition(64, 256); // green tank (Player 1)
+	//Tank tank[4]{ Tank("green", input), Tank("blue", input), Tank("red", input), Tank ("black", input)};
+	
+	tank[0].setPosition(40, windowHeight/2); // green tank (Player 1)
+	
+	tank[1].setPosition(windowWidth - 40, windowHeight / 2); // blue tank (Player 2)
+	
+	tank[2].setPosition(windowWidth / 2, 40); // red tank (Player 3)
+	
+	tank[3].setPosition(windowWidth / 2, windowHeight - 40); // black tank (Player 4)
 
-	tanks[1].setPosition(416, 128); // blue tank (Player 2)
-
-	tanks[2].setPosition(128, 64); // red tank (Player 3)
-
-	tanks[3].setPosition(20, 20); // black tank (Player 4)
-
-	tanks[1].SetRenderMode(Tank::RenderMode::REAL_AND_PREDICTED);
+	tank[1].SetRenderMode(Tank::RenderMode::REAL_AND_PREDICTED);
 
 	//Initialise the background texture and sprite
 	sf::Texture floorTexture;
@@ -108,7 +121,11 @@ int main() {
 				if (event.key.code == sf::Keyboard::Key::Escape)
 					window.close();
 				if( event.key.code == sf::Keyboard::Key::R ) {
-					tanks[0].Reset(); tanks[1].Reset();
+					for (int i = 0; i < tank.size(); i++) // resetting tanks position in for loop
+					{
+						tank[i].Reset();
+					}
+					
 					//netSimulator.Reset();
 					nextPrint = startTime;
 					printf( "\n\n--------RESET--------\n\n" );
@@ -151,8 +168,10 @@ int main() {
 		//Render the scene
 		window.clear();
 		window.draw(floor);
-		for (auto& tank : tanks) {
-			tank.Render(&window);
+		for(int i = 0; i < tank.size();i++)
+		{
+			tank[i].Render(&window);
+			
 		}
 		window.draw(debugText);
 		window.display();		
