@@ -147,12 +147,14 @@
     <ClCompile Include="Framework\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetworkSimulator.cpp" />
+    <ClCompile Include="P2P.cpp" />
     <ClCompile Include="Tank.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Font.h" />
     <ClInclude Include="Framework\Input.h" />
     <ClInclude Include="NetworkSimulator.h" />
+    <ClInclude Include="P2P.h" />
     <ClInclude Include="Tank.h" />
     <ClInclude Include="TankMessage.h" />
   </ItemGroup>
