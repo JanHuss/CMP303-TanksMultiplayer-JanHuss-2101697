@@ -143,14 +143,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Framework\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetworkSimulator.cpp" />
     <ClCompile Include="Tank.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Framework\Input.h" />
     <ClInclude Include="NetworkSimulator.h" />
     <ClInclude Include="Tank.h" />
     <ClInclude Include="TankMessage.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Framework\Credits.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,10 +2,12 @@
 #include <SFML\Graphics.hpp>
 #include <vector>
 #include "TankMessage.h"
+#include "Framework/Input.h"
+
 class Tank : public sf::Sprite
 {
 public:
-	Tank(std::string color);
+	Tank(std::string color, Input* in);
 	~Tank();
 
 	enum RenderMode {
@@ -35,6 +37,8 @@ private:
 	float		m_BarrelRotation;
 
 	RenderMode	m_RenderMode = RenderMode::REAL_AND_PREDICTED;
+
+	Input* input;
 
 	std::vector<TankMessage> m_Messages;
 };

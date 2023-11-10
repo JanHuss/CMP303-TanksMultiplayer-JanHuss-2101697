@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="CMP105 Framework">
+      <UniqueIdentifier>{9cb4e7d5-b738-467d-89a8-71438d4c71c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -23,6 +26,9 @@
     </ClCompile>
     <ClCompile Include="NetworkSimulator.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Input.cpp">
+      <Filter>CMP105 Framework</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -35,5 +41,13 @@
     <ClInclude Include="NetworkSimulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Framework\Input.h">
+      <Filter>CMP105 Framework</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Framework\Credits.txt">
+      <Filter>CMP105 Framework</Filter>
+    </Text>
   </ItemGroup>
 </Project>

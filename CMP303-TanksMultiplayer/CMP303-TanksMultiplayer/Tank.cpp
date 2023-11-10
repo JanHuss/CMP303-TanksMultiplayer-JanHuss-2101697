@@ -1,8 +1,7 @@
 #include "Tank.h"
 
 
-
-Tank::Tank(std::string color) : sf::Sprite()
+Tank::Tank(std::string color, Input* in) : sf::Sprite(), input(in)
 {
 	m_BodyTexture.loadFromFile("Assets/" + color + "Tank.png");
 	m_BarrelTexture.loadFromFile("Assets/" + color + "Barrel.png");
@@ -32,6 +31,7 @@ void Tank::Update(float dt)
 		return;
 	TankMessage latestMessage = m_Messages.back();
 	setPosition( latestMessage.x, latestMessage.y );
+	
 }
 
 void Tank::setPosition( float x, float y ) {
