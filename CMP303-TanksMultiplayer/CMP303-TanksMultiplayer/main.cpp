@@ -6,6 +6,7 @@
 #include "TankMessage.h"
 #include "Framework/Input.h"
 #include <vector>
+#include "Font.h"
 
 //Rounds a float to two decimal places and turns it into a string
 std::string Stringify( float value ) {
@@ -16,10 +17,13 @@ std::string Stringify( float value ) {
 	return t;
 }
 
+
+
 int main() {
 	//variables
 	int windowWidth = 640;
 	int windowHeight = 480;
+	int playerScore = 0;
 	std::vector<Tank> tank;
 
 	sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "CMP303 - Tanks Multiplayer - Jan Huss - 2101697");
@@ -27,7 +31,7 @@ int main() {
 	
 	//Create an Input opject
 	Input* input = new Input;
-
+	
 	// Create a vector of tanks
 	tank.push_back(Tank("green", input)); // player 1
 	tank.push_back(Tank("blue", input)); // player 2
@@ -56,13 +60,40 @@ int main() {
 	floor.setTexture(floorTexture);
 	floor.setTextureRect(sf::IntRect(0, 0, 640, 480));
 
-	//Initialise font and text
-	sf::Font montserrat;
-	sf::Text debugText;
-	montserrat.loadFromFile("Assets/Montserrat-Regular.ttf");
-	debugText.setFont(montserrat);
-	debugText.setOutlineColor(sf::Color::Black);
-	debugText.setOutlineThickness(1.f);
+	std::vector<Font> playerScores;
+	for (int i = 0; i < tank.size(); i++)
+	{
+		playerScores.push_back(Font(&window));
+	}
+	playerScores[0].setFontPos(5, 5);
+	playerScores[1].setFontPos(windowWidth - 80, 5);
+	playerScores[2].setFontPos(5, windowHeight - 45);
+	playerScores[3].setFontPos(windowWidth - 80, windowHeight - 45);
+
+	//montserrat.loadFromFile("Assets/Montserrat-Regular.ttf");
+	//debugText.setFont(montserrat);
+	//debugText.setOutlineColor(sf::Color::Black);
+	//debugText.setOutlineThickness(1.f);
+	//
+	//pOneText.setFont(montserrat);
+	//pOneText.setOutlineColor(sf::Color::Black);
+	//pOneText.setOutlineThickness(1.f);
+	//pOneText.setPosition(5, 5);
+	//
+	//pTwoText.setFont(montserrat);
+	//pTwoText.setOutlineColor(sf::Color::Black);
+	//pTwoText.setOutlineThickness(1.f);
+	//pTwoText.setPosition(windowWidth - 80, 5);
+	//
+	//pThreeText.setFont(montserrat);
+	//pThreeText.setOutlineColor(sf::Color::Black);
+	//pThreeText.setOutlineThickness(1.f);
+	//pThreeText.setPosition(5, windowHeight - 45);
+	//
+	//pFourText.setFont(montserrat);
+	//pFourText.setOutlineColor(sf::Color::Black);
+	//pFourText.setOutlineThickness(1.f);
+	//pFourText.setPosition(windowWidth - 80, windowHeight - 45);
 
 	//Clock for timing the 'dt' value
 	sf::Clock clock;
@@ -164,16 +195,21 @@ int main() {
 				
 			}
 		}
+		for (int i = 0; i < playerScores.size(); i++)
+		{
+			playerScores[i].update();
+		}
+		
 
 		//Render the scene
 		window.clear();
 		window.draw(floor);
 		for(int i = 0; i < tank.size();i++)
 		{
-			tank[i].Render(&window);
-			
+			tank[i].Render(&window);	
+			playerScores[i].Render(&window);
 		}
-		window.draw(debugText);
+		//window.draw(debugText);
 		window.display();		
 	}
 

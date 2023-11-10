@@ -7,7 +7,7 @@
 class Tank : public sf::Sprite
 {
 public:
-	Tank(std::string color, Input* in);
+	Tank(std::string color, Input* in/*, int* pScore*/);
 	~Tank();
 
 	enum RenderMode {
@@ -25,6 +25,9 @@ public:
 	void SetRenderMode(const RenderMode renderMode) { m_RenderMode = renderMode; }
 	void setPosition( float x, float y );
 	void setGhostPosition( sf::Vector2f pos );
+
+	void setPlayerScore(int pS);
+	int getPlayerScore();
 	void Reset();
 
 private:
@@ -39,6 +42,7 @@ private:
 	RenderMode	m_RenderMode = RenderMode::REAL_AND_PREDICTED;
 
 	Input* input;
+	int playerScore;
 
 	std::vector<TankMessage> m_Messages;
 };

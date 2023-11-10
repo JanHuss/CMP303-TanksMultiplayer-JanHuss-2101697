@@ -17,6 +17,8 @@ Tank::Tank(std::string color, Input* in) : sf::Sprite(), input(in)
 	m_BarrelSprite.setTexture(m_BarrelTexture);
 	m_BarrelSprite.setOrigin(6, 2);
 	m_BarrelSprite.setPosition( getPosition() );
+
+	playerScore = 0;
 }
 
 
@@ -43,6 +45,18 @@ void Tank::setPosition( float x, float y ) {
 void Tank::setGhostPosition( sf::Vector2f pos ) {
 	m_GhostSprite.setPosition( pos );
 }
+
+void Tank::setPlayerScore(int pS)
+{
+	playerScore = pS;
+}
+
+int Tank::getPlayerScore()
+{
+	return playerScore;
+}
+
+
 
 //Draw the tank / or the ghost / or both
 const void Tank::Render(sf::RenderWindow * window) {

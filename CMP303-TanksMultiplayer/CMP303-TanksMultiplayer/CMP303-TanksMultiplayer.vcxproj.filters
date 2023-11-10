@@ -30,6 +30,9 @@
     <ClCompile Include="Framework\Input.cpp">
       <Filter>CMP105 Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tank.h">
@@ -43,6 +46,9 @@
     </ClInclude>
     <ClInclude Include="Framework\Input.h">
       <Filter>CMP105 Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
