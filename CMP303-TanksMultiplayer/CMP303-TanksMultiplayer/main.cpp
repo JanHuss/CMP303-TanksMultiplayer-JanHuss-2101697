@@ -6,6 +6,10 @@
 #include "TankMessage.h"
 #include "Framework/Input.h"
 #include <vector>
+#include "P2P.h"
+
+// Prototypes
+void checkIsHost();
 
 //Rounds a float to two decimal places and turns it into a string
 std::string Stringify( float value ) {
@@ -64,6 +68,9 @@ int main() {
 	debugText.setOutlineColor(sf::Color::Black);
 	debugText.setOutlineThickness(1.f);
 
+	//Initialise Network Peer to Peer
+	P2P* p2p = new P2P;
+
 	//Clock for timing the 'dt' value
 	sf::Clock clock;
 	float sendRate	= 0.5f;
@@ -71,15 +78,15 @@ int main() {
 	float gameSpeed = 1.0f;
 	float startTime = sendRate * 3.0f;
 
-	// Networking variables
-	sf::SocketSelector socketSelector;
-	// setting up the TCP listener
-	bool isHost = true; // bool to determine the host. if a host already exists then set to false and stop programme from listening for clients
-	sf::TcpListener tcpListener;
-	// setting up TCP socket
-	sf::TcpSocket tcpSocket;
+	//// Networking variables
+	//sf::SocketSelector socketSelector;
+	//// setting up the TCP listener
+	//bool isHost = true; // bool to determine the host. if a host already exists then set to false and stop programme from listening for clients
+	//sf::TcpListener tcpListener;
+	//// setting up TCP socket
+	//sf::TcpSocket tcpSocket;
 
-	if (tcpListener.listen(53000) != sf::Socket::Done)
+	/*if (tcpListener.listen(53000) != sf::Socket::Done)
 	{
 		printf("Failed to bind server to port\n");
 		isHost = false;
@@ -87,19 +94,20 @@ int main() {
 	else
 	{
 		socketSelector.add(tcpListener);
-	}
+	}*/
+	p2p->tcpListeningCheck();
 
-	sf::Socket::Status tcpSocketStatus = tcpSocket.connect("localhost", 53000/*,timeOut*/);
+	//sf::Socket::Status tcpSocketStatus = tcpSocket.connect("localhost", 53000/*,timeOut*/);
 
-	if (tcpSocketStatus != sf::Socket::Done)
-	{
-		printf("Error binding TCP socket\n"); // error message if TCP socket fails to bind
-		//tcpSocket.send(packet);
-		//tcpSocket.receive(packet);
-	}
-	
-	printf("Socket is binding\n");
-		
+	//if (tcpSocketStatus != sf::Socket::Done)
+	//{
+	//	printf("Error binding TCP socket\n"); // error message if TCP socket fails to bind
+	//	//tcpSocket.send(packet);
+	//	//tcpSocket.receive(packet);
+	//}
+	//
+	//printf("Socket is binding\n");
+	p2p->tcpStatusCheck();
 	
 
 	//When are we next printing the predicted position (so we don't spam the console)
@@ -136,34 +144,10 @@ int main() {
 		// setting up packet
 		sf::Packet packet;
 		
+		p2p->checkIsHost(); // checking if host already exists. If not, the application is the host. if it is, the application will be a client
 		
-		if (isHost)
-		{
-			if (socketSelector.wait(sf::milliseconds(1)))
-			{
-				if (socketSelector.isReady(tcpListener))
-				{
-					printf("Is Host\n");
-					sf::TcpSocket client;
-					if (tcpListener.accept(client) != sf::Socket::Done)
-					{
-						printf("Failed to connect to client\n");
-					}
-					printf("A client connected\n");
-				}
-			}
-		}
+		p2p->socketSelection();
 		
-		//sf::Time timeOut;
-		socketSelector.add(tcpSocket);
-		tcpSocket.setBlocking(false);
-		if (socketSelector.wait(sf::milliseconds(1)))
-		{
-			if (socketSelector.isReady(tcpSocket))
-			{
-				
-			}
-		}
 
 		//Render the scene
 		window.clear();
@@ -188,3 +172,23 @@ int main() {
 
 	return 0;
 }
+
+//void checkIsHost()
+//{
+//	if (isHost)
+//	{
+//		if (socketSelector.wait(sf::milliseconds(1)))
+//		{
+//			if (socketSelector.isReady(tcpListener))
+//			{
+//				printf("Is Host\n");
+//				sf::TcpSocket client;
+//				if (tcpListener.accept(client) != sf::Socket::Done)
+//				{
+//					printf("Failed to connect to client\n");
+//				}
+//				printf("A client connected\n");
+//			}
+//		}
+//	}
+//}
