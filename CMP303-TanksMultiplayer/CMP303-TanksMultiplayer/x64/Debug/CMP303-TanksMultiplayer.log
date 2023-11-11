@@ -1,18 +1,13 @@
-﻿  main.cpp
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\main.cpp(45,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\main.cpp(47,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\main.cpp(47,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\main.cpp(49,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\main.cpp(51,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\main.cpp(51,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  P2P.cpp
-  Tank.cpp
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(10,64): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(10,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(14,78): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(14,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(68,37): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(68,37): warning C4267: 'initializing': conversion from 'size_t' to 'const int', possible loss of data
+﻿  Tank.cpp
+D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(14,64): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(14,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(18,78): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(18,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(30,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(30,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(107,37): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(107,37): warning C4267: 'initializing': conversion from 'size_t' to 'const int', possible loss of data
+  main.cpp
+D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\main.cpp(57,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Generating Code...
-  LINK : D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\x64\Debug\CMP303-TanksMultiplayer.exe not found or not built by the last incremental link; performing full link
   CMP303-TanksMultiplayer.vcxproj -> D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\x64\Debug\CMP303-TanksMultiplayer.exe

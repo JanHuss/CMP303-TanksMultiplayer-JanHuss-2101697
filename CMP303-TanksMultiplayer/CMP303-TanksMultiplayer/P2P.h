@@ -10,6 +10,8 @@ private:
 	sf::TcpListener tcpListener;
 	// setting up TCP socket
 	sf::TcpSocket tcpSocket;
+	// setting up packet
+	sf::Packet packet;
 
 public:
 	P2P();

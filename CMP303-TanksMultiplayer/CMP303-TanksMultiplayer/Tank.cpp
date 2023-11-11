@@ -1,8 +1,12 @@
 #include "Tank.h"
 
 
-Tank::Tank(std::string color, Input* in) : sf::Sprite(), input(in)
+Tank::Tank(std::string color/*, Input* in*/,int setTX,int setTY) : sf::Sprite()/*, input(in)*/
 {
+	// initialisation
+	setTextX = setTX;
+	setTextY = setTY;
+
 	m_BodyTexture.loadFromFile("Assets/" + color + "Tank.png");
 	m_BarrelTexture.loadFromFile("Assets/" + color + "Barrel.png");
 	setTexture(m_BodyTexture);
@@ -17,6 +21,17 @@ Tank::Tank(std::string color, Input* in) : sf::Sprite(), input(in)
 	m_BarrelSprite.setTexture(m_BarrelTexture);
 	m_BarrelSprite.setOrigin(6, 2);
 	m_BarrelSprite.setPosition( getPosition() );
+
+	// initialise font
+	montserrat.loadFromFile("Assets/Montserrat-Regular.ttf");
+	debugText.setFont(montserrat);
+	debugText.setOutlineColor(sf::Color::Black);
+	debugText.setOutlineThickness(1.f);
+	debugText.setPosition(setTextX, setTextY);
+
+	
+
+	speed = 30.0f;
 }
 
 
@@ -31,7 +46,30 @@ void Tank::Update(float dt)
 		return;
 	TankMessage latestMessage = m_Messages.back();
 	setPosition( latestMessage.x, latestMessage.y );
-	
+	handleInput(dt);
+	//std::cout << "iostream is being called in update" << std::endl;
+}
+
+void Tank::handleInput(float dt)
+{
+	//std::cout << "iostream is being called in handleInput" << std::endl;
+	if (input.isKeyDown(sf::Keyboard::A)) // move left
+	{
+		std::cout << "A is down" << std::endl;
+	}
+	else if (input.isKeyDown(sf::Keyboard::D)) // move right
+	{
+		std::cout << "D is down" << std::endl;
+		//setPosition(speed * dt, 0);
+	}
+	else if (input.isKeyDown(sf::Keyboard::W)) // move up
+	{
+		std::cout << "W is down" << std::endl;
+	}
+	else if (input.isKeyDown(sf::Keyboard::S)) // move down
+	{
+		std::cout << "S is down" << std::endl;
+	}
 }
 
 void Tank::setPosition( float x, float y ) {
@@ -51,6 +89,7 @@ const void Tank::Render(sf::RenderWindow * window) {
 	if (m_RenderMode != 1) {
 		window->draw(*this);
 		window->draw(m_BarrelSprite);
+		window->draw(debugText);
 	}
 }
 

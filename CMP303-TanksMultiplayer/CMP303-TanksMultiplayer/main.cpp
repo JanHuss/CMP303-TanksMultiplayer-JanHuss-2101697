@@ -4,17 +4,26 @@
 #include <iomanip>
 #include "Tank.h"
 #include "TankMessage.h"
-#include "Framework/Input.h"
+//#include "Framework/Input.h"
 #include <vector>
+#include "Floor.h"
 #include "P2P.h"
 
-// Prototypes
-void checkIsHost();
 
 //Rounds a float to two decimal places and turns it into a string
-std::string Stringify( float value ) {
+std::string Stringify( float value ) 
+{
 	std::stringstream sStream;
 	sStream << std::fixed << std::setprecision( 2 ) << value;
+	std::string t;
+	sStream >> t;
+	return t;
+}
+
+std::string pStoString(int value)
+{
+	std::stringstream sStream;
+	sStream << std::fixed << std::setprecision(2) << value;
 	std::string t;
 	sStream >> t;
 	return t;
@@ -24,49 +33,46 @@ int main() {
 	//variables
 	int windowWidth = 640;
 	int windowHeight = 480;
-	std::vector<Tank> tank;
+	int playerTextX = windowWidth / 2;
+	int playerTextY = windowHeight / 2;
 
 	sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "CMP303 - Tanks Multiplayer - Jan Huss - 2101697");
 	window.setFramerateLimit(60);	//Request 60 frames per second
 	
 	//Create an Input opject
-	Input* input = new Input;
+	//Input input;
 
+	//Create four tanks using an array
+	//Tank tank[1]{ Tank("green", input)/*, Tank("blue", input), Tank("red", input), Tank ("black", input)*/};
+	//Create four tanks using a vector pointer of tanks
+	std::vector<Tank*> tank;
+	
 	// Create a vector of tanks
-	tank.push_back(Tank("green", input)); // player 1
-	tank.push_back(Tank("blue", input)); // player 2
-	tank.push_back(Tank("red", input)); // player 3
-	tank.push_back(Tank("black", input)); // player 4
-
-	//Create two tanks (Can also accept "black" and "red")
-
-	//Tank tank[4]{ Tank("green", input), Tank("blue", input), Tank("red", input), Tank ("black", input)};
+	tank.push_back(new Tank("green"/*, &input*/, playerTextX, playerTextY)); // player 1
+	//tank.push_back(Tank("blue", input)); // player 2
+	//tank.push_back(Tank("red", input)); // player 3
+	//tank.push_back(Tank("black", input)); // player 4
 	
-	tank[0].setPosition(40, windowHeight/2); // green tank (Player 1)
-	
-	tank[1].setPosition(windowWidth - 40, windowHeight / 2); // blue tank (Player 2)
-	
-	tank[2].setPosition(windowWidth / 2, 40); // red tank (Player 3)
-	
-	tank[3].setPosition(windowWidth / 2, windowHeight - 40); // black tank (Player 4)
+	// set tank positions
+	tank[0]->setPosition(40, windowHeight / 2); // green tank (Player 1)
+	//tank[1].setPosition(windowWidth - 40, windowHeight / 2); // blue tank (Player 2)
+	//tank[2].setPosition(windowWidth / 2, 40); // red tank (Player 3)
+	//tank[3].setPosition(windowWidth / 2, windowHeight - 40); // black tank (Player 4)
 
-	tank[1].SetRenderMode(Tank::RenderMode::REAL_AND_PREDICTED);
+	// setting render mode
+	//tank[3].SetRenderMode(Tank::RenderMode::REAL_AND_PREDICTED);
 
-	//Initialise the background texture and sprite
-	sf::Texture floorTexture;
-	sf::Sprite floor;
-	floorTexture.loadFromFile("Assets/tileSand1.png");
-	floorTexture.setRepeated(true);
-	floor.setTexture(floorTexture);
-	floor.setTextureRect(sf::IntRect(0, 0, 640, 480));
+	////Initialise the background texture and sprite
+	Floor* floor = new Floor;
+	floor->floorInit();
 
 	//Initialise font and text
-	sf::Font montserrat;
-	sf::Text debugText;
-	montserrat.loadFromFile("Assets/Montserrat-Regular.ttf");
-	debugText.setFont(montserrat);
-	debugText.setOutlineColor(sf::Color::Black);
-	debugText.setOutlineThickness(1.f);
+	//sf::Font montserrat;
+	//sf::Text debugText;
+	//montserrat.loadFromFile("Assets/Montserrat-Regular.ttf");
+	//debugText.setFont(montserrat);
+	//debugText.setOutlineColor(sf::Color::Black);
+	//debugText.setOutlineThickness(1.f);
 
 	//Initialise Network Peer to Peer
 	P2P* p2p = new P2P;
@@ -78,44 +84,12 @@ int main() {
 	float gameSpeed = 1.0f;
 	float startTime = sendRate * 3.0f;
 
-	//// Networking variables
-	//sf::SocketSelector socketSelector;
-	//// setting up the TCP listener
-	//bool isHost = true; // bool to determine the host. if a host already exists then set to false and stop programme from listening for clients
-	//sf::TcpListener tcpListener;
-	//// setting up TCP socket
-	//sf::TcpSocket tcpSocket;
-
-	/*if (tcpListener.listen(53000) != sf::Socket::Done)
-	{
-		printf("Failed to bind server to port\n");
-		isHost = false;
-	}
-	else
-	{
-		socketSelector.add(tcpListener);
-	}*/
 	p2p->tcpListeningCheck();
 
-	//sf::Socket::Status tcpSocketStatus = tcpSocket.connect("localhost", 53000/*,timeOut*/);
-
-	//if (tcpSocketStatus != sf::Socket::Done)
-	//{
-	//	printf("Error binding TCP socket\n"); // error message if TCP socket fails to bind
-	//	//tcpSocket.send(packet);
-	//	//tcpSocket.receive(packet);
-	//}
-	//
-	//printf("Socket is binding\n");
-	p2p->tcpStatusCheck();
-	
+	p2p->tcpStatusCheck();	
 
 	//When are we next printing the predicted position (so we don't spam the console)
 	float nextPrint = startTime;
-
-	//Create a network simulator with that "sends" a message every 0.5 seconds and has a latency of 0.1 seconds
-	//NetworkSimulator netSimulator(sendRate, latency);
-	//netSimulator.m_MyID = 0;	//On the network, we are Tank 0
 	
 	while (window.isOpen()) {
 		//Get the time since the last frame in milliseconds
@@ -129,10 +103,10 @@ int main() {
 				if (event.key.code == sf::Keyboard::Key::Escape)
 					window.close();
 				if( event.key.code == sf::Keyboard::Key::R ) {
-					for (int i = 0; i < tank.size(); i++) // resetting tanks position in for loop
-					{
-						tank[i].Reset();
-					}
+					//for (auto t : tank) // resetting tanks position in for loop
+					//{
+					//	t.Reset();
+					//}
 					
 					//netSimulator.Reset();
 					nextPrint = startTime;
@@ -140,24 +114,23 @@ int main() {
 				}
 			}
 		}
+		
+		// Class update functions
+		tank[0]->Update(dt);
+		tank[0]->handleInput(dt);
+
 		// Networking
-		// setting up packet
-		sf::Packet packet;
-		
 		p2p->checkIsHost(); // checking if host already exists. If not, the application is the host. if it is, the application will be a client
-		
-		p2p->socketSelection();
-		
+		p2p->socketSelection();		
 
 		//Render the scene
 		window.clear();
-		window.draw(floor);
-		for(int i = 0; i < tank.size();i++)
+		window.draw(floor->floor);
+		for (int i = 0; i< tank.size();i++)
 		{
-			tank[i].Render(&window);
-			
+			tank[i]->Render(&window);
 		}
-		window.draw(debugText);
+		//window.draw(debugText);
 		window.display();		
 	}
 
@@ -172,23 +145,3 @@ int main() {
 
 	return 0;
 }
-
-//void checkIsHost()
-//{
-//	if (isHost)
-//	{
-//		if (socketSelector.wait(sf::milliseconds(1)))
-//		{
-//			if (socketSelector.isReady(tcpListener))
-//			{
-//				printf("Is Host\n");
-//				sf::TcpSocket client;
-//				if (tcpListener.accept(client) != sf::Socket::Done)
-//				{
-//					printf("Failed to connect to client\n");
-//				}
-//				printf("A client connected\n");
-//			}
-//		}
-//	}
-//}

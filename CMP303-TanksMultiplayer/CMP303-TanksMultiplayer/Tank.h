@@ -3,11 +3,12 @@
 #include <vector>
 #include "TankMessage.h"
 #include "Framework/Input.h"
+#include <iostream>
 
 class Tank : public sf::Sprite
 {
 public:
-	Tank(std::string color, Input* in);
+	Tank(std::string color/*, Input* in*/, int setTX, int setTY);
 	~Tank();
 
 	enum RenderMode {
@@ -17,6 +18,7 @@ public:
 	};
 
 	void Update(float dt);
+	void handleInput(float dt);
 	const void Render(sf::RenderWindow* window);
 
 	void AddMessage(const TankMessage& msg);
@@ -38,8 +40,16 @@ private:
 
 	RenderMode	m_RenderMode = RenderMode::REAL_AND_PREDICTED;
 
-	Input* input;
+	Input input;
 
 	std::vector<TankMessage> m_Messages;
+
+	float speed;
+
+	//Initialise font and text
+	sf::Font montserrat;
+	sf::Text debugText;
+	int setTextX;
+	int setTextY;
 };
 
