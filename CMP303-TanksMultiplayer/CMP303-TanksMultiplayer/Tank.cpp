@@ -31,7 +31,7 @@ Tank::Tank(std::string color/*, Input* in*/,int setTX,int setTY) : sf::Sprite()/
 
 	
 
-	speed = 30.0f;
+	speed = 40.0f;
 }
 
 
@@ -46,29 +46,25 @@ void Tank::Update(float dt)
 		return;
 	TankMessage latestMessage = m_Messages.back();
 	setPosition( latestMessage.x, latestMessage.y );
-	handleInput(dt);
-	//std::cout << "iostream is being called in update" << std::endl;
 }
 
 void Tank::handleInput(float dt)
 {
-	//std::cout << "iostream is being called in handleInput" << std::endl;
-	if (input.isKeyDown(sf::Keyboard::A)) // move left
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) // move left
 	{
-		std::cout << "A is down" << std::endl;
+		setPosition(getPosition().x + (-speed * dt), getPosition().y);
 	}
-	else if (input.isKeyDown(sf::Keyboard::D)) // move right
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) // move right
 	{
-		std::cout << "D is down" << std::endl;
-		//setPosition(speed * dt, 0);
+		setPosition(getPosition().x + (speed * dt), getPosition().y);
 	}
-	else if (input.isKeyDown(sf::Keyboard::W)) // move up
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) // move up
 	{
-		std::cout << "W is down" << std::endl;
+		setPosition(getPosition().x, getPosition().y + (-speed * dt));
 	}
-	else if (input.isKeyDown(sf::Keyboard::S)) // move down
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) // move down
 	{
-		std::cout << "S is down" << std::endl;
+		setPosition(getPosition().x, getPosition().y + (speed * dt));
 	}
 }
 
@@ -80,17 +76,6 @@ void Tank::setPosition( float x, float y ) {
 //Use this to set the prediction position
 void Tank::setGhostPosition( sf::Vector2f pos ) {
 	m_GhostSprite.setPosition( pos );
-}
-
-//Draw the tank / or the ghost / or both
-const void Tank::Render(sf::RenderWindow * window) {
-	if(m_RenderMode > 0)
-		window->draw(m_GhostSprite);
-	if (m_RenderMode != 1) {
-		window->draw(*this);
-		window->draw(m_BarrelSprite);
-		window->draw(debugText);
-	}
 }
 
 //Add a message to the tank's network message queue
@@ -126,4 +111,15 @@ sf::Vector2f Tank::RunPrediction(float gameTime) {
 
 void Tank::Reset() {
 	m_Messages.clear();
+}
+
+//Draw the tank / or the ghost / or both
+const void Tank::Render(sf::RenderWindow* window) {
+	if (m_RenderMode > 0)
+		window->draw(m_GhostSprite);
+	if (m_RenderMode != 1) {
+		window->draw(*this);
+		window->draw(m_BarrelSprite);
+		window->draw(debugText);
+	}
 }

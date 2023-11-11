@@ -40,7 +40,7 @@ int main() {
 	window.setFramerateLimit(60);	//Request 60 frames per second
 	
 	//Create an Input opject
-	//Input input;
+	//Input* input = new Input;
 
 	//Create four tanks using an array
 	//Tank tank[1]{ Tank("green", input)/*, Tank("blue", input), Tank("red", input), Tank ("black", input)*/};
@@ -114,7 +114,6 @@ int main() {
 				}
 			}
 		}
-		
 		// Class update functions
 		tank[0]->Update(dt);
 		tank[0]->handleInput(dt);
