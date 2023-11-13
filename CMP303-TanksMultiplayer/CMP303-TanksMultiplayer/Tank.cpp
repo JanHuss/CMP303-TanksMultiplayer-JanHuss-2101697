@@ -1,7 +1,7 @@
 #include "Tank.h"
 
 
-Tank::Tank(std::string color,int setTX,int setTY, int setR) : sf::Sprite()
+Tank::Tank(std::string color, int setR)
 {
 	// initialisation
 	setRotate = setR;

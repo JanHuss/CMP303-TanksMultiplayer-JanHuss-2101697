@@ -1,6 +1,6 @@
 #include "P2P.h"
 
-P2P::P2P()
+P2P::P2P(std::vector<Tank*> t) : tank(t)
 {
 }
 
@@ -50,6 +50,9 @@ void P2P::checkIsHost()
 					printf("Failed to connect to client\n");
 				}
 				printf("A client connected\n");
+				tank.push_back(new Tank("Blue", 90));
+				
+				//tank[0]->setPosition(40, 480 / 2);
 			}
 		}
 	}

@@ -8,7 +8,7 @@
 class Tank : public sf::Sprite
 {
 public:
-	Tank(std::string color, int setTX, int setTY, int setR);
+	Tank(std::string color, int setR);
 	~Tank();
 
 	enum RenderMode {

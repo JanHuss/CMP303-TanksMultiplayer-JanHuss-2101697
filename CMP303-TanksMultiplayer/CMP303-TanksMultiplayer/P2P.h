@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Network.hpp"
+#include "Tank.h"
 class P2P
 {
 private:
@@ -13,8 +14,10 @@ private:
 	// setting up packet
 	sf::Packet packet;
 
+	std::vector<Tank*> tank;
+
 public:
-	P2P();
+	P2P(std::vector<Tank*> t);
 	~P2P();
 	void tcpListeningCheck();
 	void tcpStatusCheck();

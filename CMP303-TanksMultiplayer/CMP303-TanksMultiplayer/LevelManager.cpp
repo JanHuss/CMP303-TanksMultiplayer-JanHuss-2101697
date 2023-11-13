@@ -9,13 +9,12 @@ LevelManager::LevelManager(int windowW, int windowH)
 	playerTextY = windowH / 2;
 	playerScoreDisplay = "";
 
-	tank = new Tank("", playerTextX, playerTextY, playerOneRotation);
 	playerScore = new Font(playerScoreDisplay, playerTextX, playerTextY);
 	floor = new Floor;
 	floor->floorInit();
 
 	// Networking Peer to Peer
-	p2p = new P2P;
+	p2p = new P2P(tank);
 	p2p->tcpListeningCheck();
 	p2p->tcpStatusCheck();
 
@@ -27,12 +26,20 @@ LevelManager::~LevelManager()
 
 void LevelManager::Update(float dt)
 {
+	//std::cout << "tank vector size: " + pStoString(tank.size()) << std::endl;
 	assignPlayer();
 	p2p->socketSelection();
 
 	// Class update functions
-	tank->Update(dt);
-	tank->handleInput(dt);
+	if (tank.size() != 0) 
+	{
+		for (auto& t : tank)
+		{
+			t->Update(dt);
+			t->handleInput(dt);
+		}
+
+	}
 	playerScore->Update(dt);
 }
 
@@ -43,25 +50,22 @@ void LevelManager::assignPlayer()
 	{
 		p2p->checkIsHost(); // checking if host already exists. If not, the application is the host. if it is, the application will be a client
 		// create player one tank
-		tank = new Tank("green", playerTextX, playerTextY, playerOneRotation);
-		playerScore = new Font("P1(Green): ", 20, 20);
-		//tank.push_back(new Tank("green", playerTextX, playerTextY, playerOneRotation)); // player 1
-		tank->setPosition(40, windowHeight / 2); // green tank (Player 1)
+		tank.push_back(new Tank("green", playerOneRotation));
+		playerScore = new Font("P1(Green): ", 20, 20); // player 1
+		tank[0]->setPosition(40, windowHeight / 2); // green tank (Player 1)
 		playerOne = true;
 	}
-	else if (!p2p->getIsHost() && !playerTwo)
-	{
-		tank = new Tank("blue", playerTextX, playerTextY, playerTwoRotation);
-		playerScore = new Font("P2(Blue): ", windowWidth - 80, 20);
-		//tank.push_back(new Tank("blue", playerTextX, playerTextY, playerTwoRotation)); // player 2
-		tank->setPosition(windowWidth - 40, windowHeight / 2); // blue tank (Player 2)
-		playerTwo = true;
-	}
+	//else if (!p2p->getIsHost() && !playerTwo)
+	//{
+	//	tank.push_back(new Tank("blue", playerTwoRotation));
+	//	playerScore = new Font("P2(Blue): ", windowWidth - 80, 20); // player 2
+	//	tank[1]->setPosition(windowWidth - 40, windowHeight / 2); // blue tank (Player 2)
+	//	playerTwo = true;
+	//}
 	//else if (!p2p->getIsHost() && playerTwo && !playerThree)
 	//{
-	//	tank = new Tank("Red", playerTextX, playerTextY, playerTwoRotation);
-	//	//tank.push_back(new Tank("Red", playerTextX, playerTextY, playerTwoRotation)); // player 2
-	//	tank->setPosition(windowWidth / 2, 40); // red tank (Player 3)
+	//	tank.push_back(new Tank("Red", playerTwoRotation)); // player 3
+	//	tank[2]->setPosition(windowWidth / 2, 40); // red tank (Player 3)
 	//	playerThree = true;
 	//}
 }
@@ -77,7 +81,7 @@ std::string Stringify(float value)
 }
 
 //Rounds turns int into a string
-std::string pStoString(int value)
+std::string LevelManager::pStoString(int value)
 {
 	std::stringstream sStream;
 	sStream << std::fixed << std::setprecision(2) << value;
@@ -89,6 +93,12 @@ std::string pStoString(int value)
 void LevelManager::Render(sf::RenderWindow* window)
 {
 	floor->Render(window);
-	tank->Render(window);
+	if (tank.size() != 0)
+	{
+		for (auto& t : tank) 
+		{
+			t->Render(window);
+		}
+	}
 	playerScore->Render(window);
 }

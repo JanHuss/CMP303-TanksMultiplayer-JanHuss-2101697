@@ -35,13 +35,14 @@ public:
 
 	void Update(float dt);
 	void assignPlayer();
+	std::string pStoString(int value);
 	void Render(sf::RenderWindow* window);
 
 	//Create four tanks using a vector pointer of tanks
 	//std::vector<Tank*> tank;
 
 	// pointers
-	Tank* tank; // create a tank object which will be assigned to a player
+	std::vector<Tank*> tank; // create a tank object which will be assigned to a player
 	Floor* floor; //Initialise the background texture and sprite
 	Font* playerScore; // Initialise font
 	P2P* p2p; //Initialise Peer to Peer Network
