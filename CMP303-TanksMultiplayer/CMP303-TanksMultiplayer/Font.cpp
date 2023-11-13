@@ -1,17 +1,18 @@
 #include "Font.h"
 
 
-Font::Font(int setTX, int setTY)
+Font::Font(std::string t, int setTX, int setTY)
 {
 	setTextX = setTX;
 	setTextY = setTY;
 
+	text = t;
 	// initialise font
 	montserrat.loadFromFile("Assets/Montserrat-Regular.ttf");
-	debugText.setFont(montserrat);
-	debugText.setOutlineColor(sf::Color::Black);
-	debugText.setOutlineThickness(1.f);
-	debugText.setPosition(setTextX, setTextY);
+	playerScoreText.setFont(montserrat);
+	playerScoreText.setOutlineColor(sf::Color::Black);
+	playerScoreText.setOutlineThickness(1.f);
+	playerScoreText.setPosition(setTextX, setTextY);
 }
 
 Font::~Font()
@@ -20,7 +21,7 @@ Font::~Font()
 
 void Font::Update(float dt)
 {
-
+	playerScoreText.setString(text);
 }
 
 // Rounds a float to two decimal places and turns it into a string
@@ -45,5 +46,5 @@ std::string Font::pStoString(int value)
 
 void Font::Render(sf::RenderWindow* window)
 {
-	window->draw(debugText);
+	window->draw(playerScoreText);
 }

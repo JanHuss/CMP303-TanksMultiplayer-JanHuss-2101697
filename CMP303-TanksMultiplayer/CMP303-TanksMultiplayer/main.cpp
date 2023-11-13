@@ -1,7 +1,5 @@
-#include <SFML\Graphics.hpp>
 #include <sstream>
 #include <iomanip>
-#include "Floor.h"
 #include "LevelManager.h"
 
 int main() {
@@ -16,10 +14,6 @@ int main() {
 
 	// setting render mode
 	//tank[3].SetRenderMode(Tank::RenderMode::REAL_AND_PREDICTED);
-
-	//Initialise the background texture and sprite
-	Floor* floor = new Floor;
-	floor->floorInit();
 
 	//Clock for timing the 'dt' value
 	sf::Clock clock;
@@ -58,7 +52,6 @@ int main() {
 		
 		//Render the scene
 		window.clear();
-		window.draw(floor->floor);
 		
 		level.Render(&window);
 

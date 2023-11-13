@@ -7,8 +7,10 @@ LevelManager::LevelManager(int windowW, int windowH)
 	windowHeight = windowH;
 	playerTextX = windowW / 2;
 	playerTextY = windowH / 2;
-	tank = new Tank("green", playerTextX, playerTextY, playerOneRotation);
-	font = new Font(playerTextX, playerTextY);
+	playerScoreDisplay = "";
+
+	tank = new Tank("", playerTextX, playerTextY, playerOneRotation);
+	playerScore = new Font(playerScoreDisplay, playerTextX, playerTextY);
 	floor = new Floor;
 	floor->floorInit();
 
@@ -31,7 +33,7 @@ void LevelManager::Update(float dt)
 	// Class update functions
 	tank->Update(dt);
 	tank->handleInput(dt);
-	font->Update(dt);
+	playerScore->Update(dt);
 }
 
 void LevelManager::assignPlayer()
@@ -42,6 +44,7 @@ void LevelManager::assignPlayer()
 		p2p->checkIsHost(); // checking if host already exists. If not, the application is the host. if it is, the application will be a client
 		// create player one tank
 		tank = new Tank("green", playerTextX, playerTextY, playerOneRotation);
+		playerScore = new Font("P1(Green): ", 20, 20);
 		//tank.push_back(new Tank("green", playerTextX, playerTextY, playerOneRotation)); // player 1
 		tank->setPosition(40, windowHeight / 2); // green tank (Player 1)
 		playerOne = true;
@@ -49,17 +52,18 @@ void LevelManager::assignPlayer()
 	else if (!p2p->getIsHost() && !playerTwo)
 	{
 		tank = new Tank("blue", playerTextX, playerTextY, playerTwoRotation);
+		playerScore = new Font("P2(Blue): ", windowWidth - 80, 20);
 		//tank.push_back(new Tank("blue", playerTextX, playerTextY, playerTwoRotation)); // player 2
 		tank->setPosition(windowWidth - 40, windowHeight / 2); // blue tank (Player 2)
 		playerTwo = true;
 	}
-	else if (!p2p->getIsHost() && playerTwo && !playerThree)
-	{
-		tank = new Tank("Red", playerTextX, playerTextY, playerTwoRotation);
-		//tank.push_back(new Tank("blue", playerTextX, playerTextY, playerTwoRotation)); // player 2
-		tank->setPosition(windowWidth / 2, 40); // red tank (Player 3)
-		playerThree = true;
-	}
+	//else if (!p2p->getIsHost() && playerTwo && !playerThree)
+	//{
+	//	tank = new Tank("Red", playerTextX, playerTextY, playerTwoRotation);
+	//	//tank.push_back(new Tank("Red", playerTextX, playerTextY, playerTwoRotation)); // player 2
+	//	tank->setPosition(windowWidth / 2, 40); // red tank (Player 3)
+	//	playerThree = true;
+	//}
 }
 
 //Rounds a float to two decimal places and turns it into a string
@@ -84,6 +88,7 @@ std::string pStoString(int value)
 
 void LevelManager::Render(sf::RenderWindow* window)
 {
+	floor->Render(window);
 	tank->Render(window);
-	font->Render(window);
+	playerScore->Render(window);
 }

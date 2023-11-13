@@ -2,6 +2,7 @@
 #include <SFML\Graphics.hpp>
 #include <sstream>
 #include <iomanip>
+#include "Tank.h"
 
 class Font
 {
@@ -11,9 +12,10 @@ private:
 
 	//Initialise font and text
 	sf::Font montserrat;
-	sf::Text debugText;
+	sf::Text playerScoreText;
+	std::string text;
 public:
-	Font(int setTX, int setTY);
+	Font(std::string t, int setTX, int setTY);
 	~Font();
 
 	// Functions

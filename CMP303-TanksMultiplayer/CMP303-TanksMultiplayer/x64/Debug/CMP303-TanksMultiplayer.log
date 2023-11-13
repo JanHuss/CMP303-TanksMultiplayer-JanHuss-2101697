@@ -1,8 +1,2 @@
-﻿  LevelManager.cpp
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\LevelManager.cpp(46,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\LevelManager.cpp(53,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\LevelManager.cpp(53,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\LevelManager.cpp(60,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  main.cpp
-  Generating Code...
+﻿  main.cpp
   CMP303-TanksMultiplayer.vcxproj -> D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\x64\Debug\CMP303-TanksMultiplayer.exe

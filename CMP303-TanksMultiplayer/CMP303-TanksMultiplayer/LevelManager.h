@@ -27,6 +27,8 @@ private:
 	bool playerTwo = false;
 	bool playerThree = false;
 
+	std::string playerScoreDisplay;
+
 public:
 	LevelManager(int windowW, int windowH);
 	~LevelManager();
@@ -41,7 +43,7 @@ public:
 	// pointers
 	Tank* tank; // create a tank object which will be assigned to a player
 	Floor* floor; //Initialise the background texture and sprite
-	Font* font; // Initialise font
+	Font* playerScore; // Initialise font
 	P2P* p2p; //Initialise Peer to Peer Network
 };
 
