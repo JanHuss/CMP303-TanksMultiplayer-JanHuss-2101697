@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="Framework\Input.cpp" />
+    <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetworkSimulator.cpp" />
     <ClCompile Include="P2P.cpp" />
@@ -153,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="Floor.h" />
     <ClInclude Include="Framework\Input.h" />
+    <ClInclude Include="LevelManager.h" />
     <ClInclude Include="NetworkSimulator.h" />
     <ClInclude Include="P2P.h" />
     <ClInclude Include="Tank.h" />

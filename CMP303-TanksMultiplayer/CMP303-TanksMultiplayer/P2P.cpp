@@ -55,6 +55,11 @@ void P2P::checkIsHost()
 	}
 }
 
+bool P2P::getIsHost()
+{
+	return isHost;
+}
+
 void P2P::socketSelection()
 {
 	//sf::Time timeOut;

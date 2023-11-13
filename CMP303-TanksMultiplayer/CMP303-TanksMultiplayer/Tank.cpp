@@ -1,11 +1,18 @@
 #include "Tank.h"
 
 
-Tank::Tank(std::string color/*, Input* in*/,int setTX,int setTY) : sf::Sprite()/*, input(in)*/
+Tank::Tank(std::string color/*, Input* in*/,int setTX,int setTY, int setR) : sf::Sprite()/*, input(in)*/
 {
 	// initialisation
 	setTextX = setTX;
 	setTextY = setTY;
+	setRotate = setR;
+
+	// rotation variables
+	goNorth = 180;
+	goSouth = 0;
+	goEast = 270;
+	goWest = 90;
 
 	m_BodyTexture.loadFromFile("Assets/" + color + "Tank.png");
 	m_BarrelTexture.loadFromFile("Assets/" + color + "Barrel.png");
@@ -21,6 +28,10 @@ Tank::Tank(std::string color/*, Input* in*/,int setTX,int setTY) : sf::Sprite()/
 	m_BarrelSprite.setTexture(m_BarrelTexture);
 	m_BarrelSprite.setOrigin(6, 2);
 	m_BarrelSprite.setPosition( getPosition() );
+
+	// setting the initial rotation of the tank and barrel sprites
+	m_BarrelSprite.setRotation(setRotate);
+	setRotation(setRotate);
 
 	// initialise font
 	montserrat.loadFromFile("Assets/Montserrat-Regular.ttf");
@@ -53,18 +64,34 @@ void Tank::handleInput(float dt)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) // move left
 	{
 		setPosition(getPosition().x + (-speed * dt), getPosition().y);
+		// set player rotation
+		m_BarrelSprite.setRotation(goWest);
+		setRotation(goWest);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) // move right
 	{
 		setPosition(getPosition().x + (speed * dt), getPosition().y);
+		// set player rotation
+		m_BarrelSprite.setRotation(goEast);
+		setRotation(goEast);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) // move up
 	{
 		setPosition(getPosition().x, getPosition().y + (-speed * dt));
+		// set player rotation
+		m_BarrelSprite.setRotation(goNorth);
+		setRotation(goNorth);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) // move down
 	{
 		setPosition(getPosition().x, getPosition().y + (speed * dt));
+		// set player rotation
+		m_BarrelSprite.setRotation(goSouth);
+		setRotation(goSouth);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) // fire canon
+	{
+		std::cout << "Fire Canon!!!" << std::endl;
 	}
 }
 

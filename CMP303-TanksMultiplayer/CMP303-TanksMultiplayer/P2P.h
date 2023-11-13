@@ -19,6 +19,7 @@ public:
 	void tcpListeningCheck();
 	void tcpStatusCheck();
 	void checkIsHost();
+	bool getIsHost();
 	void socketSelection();
 };
 

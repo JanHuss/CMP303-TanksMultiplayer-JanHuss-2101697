@@ -8,7 +8,7 @@
 class Tank : public sf::Sprite
 {
 public:
-	Tank(std::string color/*, Input* in*/, int setTX, int setTY);
+	Tank(std::string color/*, Input* in*/, int setTX, int setTY, int setR);
 	~Tank();
 
 	enum RenderMode {
@@ -51,5 +51,10 @@ private:
 	sf::Text debugText;
 	int setTextX;
 	int setTextY;
+	int setRotate;
+	int goNorth;
+	int goSouth;
+	int goEast;
+	int goWest;
 };
 
