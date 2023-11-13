@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Floor.cpp" />
+    <ClCompile Include="Font.cpp" />
     <ClCompile Include="Framework\Input.cpp" />
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -153,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Floor.h" />
+    <ClInclude Include="Font.h" />
     <ClInclude Include="Framework\Input.h" />
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="NetworkSimulator.h" />

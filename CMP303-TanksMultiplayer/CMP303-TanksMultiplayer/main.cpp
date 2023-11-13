@@ -12,7 +12,7 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "CMP303 - Tanks Multiplayer - Jan Huss - 2101697");
 	window.setFramerateLimit(60);	//Request 60 frames per second
 
-	LevelManager level;
+	LevelManager level(windowWidth, windowHeight);
 
 	// setting render mode
 	//tank[3].SetRenderMode(Tank::RenderMode::REAL_AND_PREDICTED);

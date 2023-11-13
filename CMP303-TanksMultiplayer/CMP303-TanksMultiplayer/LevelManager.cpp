@@ -1,9 +1,14 @@
 #include "LevelManager.h"
 
-LevelManager::LevelManager()
+LevelManager::LevelManager(int windowW, int windowH)
 {
 	// initialisation
+	windowWidth = windowW;
+	windowHeight = windowH;
+	playerTextX = windowW / 2;
+	playerTextY = windowH / 2;
 	tank = new Tank("green", playerTextX, playerTextY, playerOneRotation);
+	font = new Font(playerTextX, playerTextY);
 	floor = new Floor;
 	floor->floorInit();
 
@@ -11,6 +16,7 @@ LevelManager::LevelManager()
 	p2p = new P2P;
 	p2p->tcpListeningCheck();
 	p2p->tcpStatusCheck();
+
 }
 
 LevelManager::~LevelManager()
@@ -18,6 +24,17 @@ LevelManager::~LevelManager()
 }
 
 void LevelManager::Update(float dt)
+{
+	assignPlayer();
+	p2p->socketSelection();
+
+	// Class update functions
+	tank->Update(dt);
+	tank->handleInput(dt);
+	font->Update(dt);
+}
+
+void LevelManager::assignPlayer()
 {
 	// Networking
 	if (p2p->getIsHost() && !playerOne) // if there is no host create host and player 1
@@ -43,11 +60,6 @@ void LevelManager::Update(float dt)
 		tank->setPosition(windowWidth / 2, 40); // red tank (Player 3)
 		playerThree = true;
 	}
-	p2p->socketSelection();
-
-	// Class update functions
-	tank->Update(dt);
-	tank->handleInput(dt);
 }
 
 //Rounds a float to two decimal places and turns it into a string
@@ -73,4 +85,5 @@ std::string pStoString(int value)
 void LevelManager::Render(sf::RenderWindow* window)
 {
 	tank->Render(window);
+	font->Render(window);
 }

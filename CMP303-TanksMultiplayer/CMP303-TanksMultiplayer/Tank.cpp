@@ -1,11 +1,9 @@
 #include "Tank.h"
 
 
-Tank::Tank(std::string color/*, Input* in*/,int setTX,int setTY, int setR) : sf::Sprite()/*, input(in)*/
+Tank::Tank(std::string color,int setTX,int setTY, int setR) : sf::Sprite()
 {
 	// initialisation
-	setTextX = setTX;
-	setTextY = setTY;
 	setRotate = setR;
 
 	// rotation variables
@@ -32,15 +30,6 @@ Tank::Tank(std::string color/*, Input* in*/,int setTX,int setTY, int setR) : sf:
 	// setting the initial rotation of the tank and barrel sprites
 	m_BarrelSprite.setRotation(setRotate);
 	setRotation(setRotate);
-
-	// initialise font
-	montserrat.loadFromFile("Assets/Montserrat-Regular.ttf");
-	debugText.setFont(montserrat);
-	debugText.setOutlineColor(sf::Color::Black);
-	debugText.setOutlineThickness(1.f);
-	debugText.setPosition(setTextX, setTextY);
-
-	
 
 	speed = 40.0f;
 }
@@ -147,6 +136,5 @@ const void Tank::Render(sf::RenderWindow* window) {
 	if (m_RenderMode != 1) {
 		window->draw(*this);
 		window->draw(m_BarrelSprite);
-		window->draw(debugText);
 	}
 }

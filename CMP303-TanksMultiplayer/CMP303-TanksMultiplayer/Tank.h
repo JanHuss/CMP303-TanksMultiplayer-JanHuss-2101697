@@ -8,7 +8,7 @@
 class Tank : public sf::Sprite
 {
 public:
-	Tank(std::string color/*, Input* in*/, int setTX, int setTY, int setR);
+	Tank(std::string color, int setTX, int setTY, int setR);
 	~Tank();
 
 	enum RenderMode {
@@ -45,12 +45,6 @@ private:
 	std::vector<TankMessage> m_Messages;
 
 	float speed;
-
-	//Initialise font and text
-	sf::Font montserrat;
-	sf::Text debugText;
-	int setTextX;
-	int setTextY;
 	int setRotate;
 	int goNorth;
 	int goSouth;
