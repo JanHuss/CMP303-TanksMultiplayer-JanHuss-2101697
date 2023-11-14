@@ -26,9 +26,10 @@ LevelManager::~LevelManager()
 
 void LevelManager::Update(float dt)
 {
+	p2p->recievePacket();
 	//std::cout << "tank vector size: " + pStoString(tank.size()) << std::endl;
 	assignPlayer();
-	p2p->socketSelection();
+	//p2p->socketSelection();
 
 	// Class update functions
 	if (tank.size() != 0) 
@@ -48,12 +49,13 @@ void LevelManager::assignPlayer()
 	// Networking
 	if (p2p->getIsHost() && !playerOne) // if there is no host create host and player 1
 	{
-		p2p->checkIsHost(); // checking if host already exists. If not, the application is the host. if it is, the application will be a client
+		p2p->checkIfThereIsHost(); // checking if host already exists. If not, the application is the host. if it is, the application will be a client
 		// create player one tank
 		tank.push_back(new Tank("green", playerOneRotation));
 		playerScore = new Font("P1(Green): ", 20, 20); // player 1
 		tank[0]->setPosition(40, windowHeight / 2); // green tank (Player 1)
 		playerOne = true;
+		
 	}
 	//else if (!p2p->getIsHost() && !playerTwo)
 	//{
