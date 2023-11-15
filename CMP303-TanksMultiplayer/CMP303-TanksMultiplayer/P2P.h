@@ -4,6 +4,10 @@
 
 struct Client // struct that holds all client data. All information that needs to be sent and recieved in one location
 {
+	Client(sf::TcpSocket* tcpID)
+	{
+		this->tcpID = tcpID;
+	}
 	sf::TcpSocket* tcpID;	// pointer for the tcp client socket. this is used to assign a tcpSocket element when pushing back a new tcpclient element in the client vector.
 							// this functions as an ID to be passed on and determines who is which player
 	float posX; // x position for client tank

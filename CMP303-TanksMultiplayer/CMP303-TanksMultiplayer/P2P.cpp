@@ -3,6 +3,7 @@
 P2P::P2P(std::vector<Tank*> t) : tank(t)
 {
 	hasJoined = "A client has joined";
+	
 }
 
 P2P::~P2P()
@@ -45,18 +46,19 @@ void P2P::checkIfThereIsHost() // checks if the the application is a host or a c
 														// blocking because there is data to be received
 			{
 				printf("Is Host\n");
-				//std::vector<sf::TcpSocket*> client = ;
-				Client* someClient = new Client;
+				
+				Client* newPlayerClient = new Client(sf::TcpSocket* tcpID);
 
-				client.push_back(someClient);
+				client.push_back(newPlayerClient->tcpID);
 				for (int i = 0; i < client.size(); i++) 
 				{
-					if (tcpListener.accept(*someClient->tcpID) != sf::Socket::Done) // function is in blocking mode until a connection is actually received. 
+					if (tcpListener.accept(*newPlayerClient->tcpID) != sf::Socket::Done) // function is in blocking mode until a connection is actually received. 
 																					// so if not accepting, print error
 					{
+						sf::TcpSocket* newTCPSocket = new sf::TcpSocket;
+						
 						printf("Failed to connect to client\n");
 					}
-
 				}
 				sf::Packet packet;
 				packet << hasJoined;
@@ -68,10 +70,6 @@ void P2P::checkIfThereIsHost() // checks if the the application is a host or a c
 				tank[1]->setPosition(40, 640 / 2);
 			}
 		}
-	}
-	else
-	{
-
 	}
 }
 
