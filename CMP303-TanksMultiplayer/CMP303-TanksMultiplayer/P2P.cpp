@@ -1,7 +1,5 @@
 #include "P2P.h"
 
-
-
 P2P::P2P(std::vector<Tank*> t) : tank(t)
 {
 	hasJoined = "A client has joined";
