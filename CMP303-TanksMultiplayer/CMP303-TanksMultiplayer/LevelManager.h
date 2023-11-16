@@ -44,7 +44,7 @@ public:
 	// pointers
 	std::vector<Tank*> tank; // create a tank object which will be assigned to a player
 	Floor* floor; //Initialise the background texture and sprite
-	Font* playerScore; // Initialise font
+	//std::vector <Font*> playerScore; // Initialise font
 	P2P* p2p; //Initialise Peer to Peer Network
 };
 

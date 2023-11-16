@@ -2,6 +2,7 @@
 #include "SFML/Network.hpp"
 #include "Tank.h"
 
+
 struct Client // struct that holds all client data. All information that needs to be sent and recieved in one location
 {
 	Client(sf::TcpSocket* tcpID)
@@ -10,9 +11,23 @@ struct Client // struct that holds all client data. All information that needs t
 	}
 	sf::TcpSocket* tcpID;	// pointer for the tcp client socket. this is used to assign a tcpSocket element when pushing back a new tcpclient element in the client vector.
 							// this functions as an ID to be passed on and determines who is which player
-	float posX; // x position for client tank
-	float posY; // y position for client tank
+	sf::Vector2f playerPos; // to store tanks coordinates
 };
+//sf::Packet& operator <<(sf::Packet& packet, const Client& client) 
+//{
+//	// Insert data from client's members into packet
+//	packet << client.tcpID, client.playerPos;
+//	// e.g., packet << client.someMember;
+//	return packet;
+//}
+//
+//sf::Packet& operator >>(sf::Packet& packet, Client& client) 
+//{
+//	// Extract data from packet and assign to client's members
+//	packet >> client.playerPos;
+//	// e.g., packet >> client.someMember;
+//	return packet;
+//}
 
 class P2P
 {
@@ -38,7 +53,7 @@ public:
 	void checkIfThereIsHost();
 	bool getIsHost();
 	//void socketSelection();
-	void sendPacket(sf::Packet p); // function to send package data
-	sf::Packet recievePacket(); // funtion to recieve package data
+	void sendClientPacket(sf::Packet p); // function to send package data
+	sf::Packet recieveClientPacket(sf::TcpSocket& tcpS); // funtion to recieve package data
 };
 

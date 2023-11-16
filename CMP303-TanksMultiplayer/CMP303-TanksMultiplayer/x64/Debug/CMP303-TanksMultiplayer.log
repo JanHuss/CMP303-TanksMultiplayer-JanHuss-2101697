@@ -1,6 +1,2 @@
-﻿  LevelManager.cpp
-D:\De Daduck (Jan)\Studies\Year 3\CMP303-Networking\Coursework\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\LevelManager.cpp(56,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  P2P.cpp
-  main.cpp
-  Generating Code...
-  CMP303-TanksMultiplayer.vcxproj -> D:\De Daduck (Jan)\Studies\Year 3\CMP303-Networking\Coursework\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\x64\Debug\CMP303-TanksMultiplayer.exe
+﻿  P2P.cpp
+  CMP303-TanksMultiplayer.vcxproj -> D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\x64\Debug\CMP303-TanksMultiplayer.exe
