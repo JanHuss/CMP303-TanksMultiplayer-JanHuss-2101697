@@ -114,11 +114,10 @@ void P2P::checkIfThereIsHost() // checks if the the application is a host or a c
 			sf::Packet packet;
 			packet = recieveClientPacket(tcpSocket);
 			std::string clientEntersRoom;
+			clientEntersRoom = "oh a new player connected!";
 			packet >> clientEntersRoom;
 			std::cout << clientEntersRoom << std::endl;
 		}
-		
-
 	}
 	//else if (!isHost)
 	//{
