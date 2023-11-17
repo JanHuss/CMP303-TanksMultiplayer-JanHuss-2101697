@@ -18,7 +18,7 @@ struct Client // struct that holds all client data. All information that needs t
 class P2P
 {
 private:
-	// Networking variables
+	// variables
 	sf::SocketSelector socketSelector;
 	sf::TcpListener tcpListener; // setting up the TCP listener
 	sf::TcpSocket tcpSocket; // setting up TCP socket
@@ -36,16 +36,18 @@ public:
 	P2P(std::vector<Tank*> t);
 	~P2P();
 
+	void peerToPeerArchitecture();
+
 	void tcpListeningCheck();
 	void tcpStatusCheck();
+
 	void udpBindServer();
 	void udpBindClient();
-	
 
-	void checkIfThereIsHost();
-	bool getIsHost();
 	//void socketSelection();
 	void sendPacket(sf::Packet p); // function to send package data
 	sf::Packet recievePacket(sf::TcpSocket& tcpS); // funtion to recieve package data
+	
+	bool getIsHost();
 };
 

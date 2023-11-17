@@ -29,7 +29,7 @@ LevelManager::~LevelManager()
 
 void LevelManager::Update(float dt)
 {
-	p2p->checkIfThereIsHost(); // checking if host already exists. If not, the application is the host. if it is, the application will be a client
+	p2p->peerToPeerArchitecture(); // checking if host already exists. If not, the application is the host. if it is, the application will be a client
 	
 	// Class update functions
 	if (tank.size() != 0) 

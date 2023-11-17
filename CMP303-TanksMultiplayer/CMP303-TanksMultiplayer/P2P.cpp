@@ -9,65 +9,22 @@ P2P::~P2P()
 {
 }
 
-void P2P::tcpListeningCheck()// SERVER looking/listening for available socket
+// Peer to Peer Architecture 
+void P2P::peerToPeerArchitecture()
 {
-	if (tcpListener.listen(53000) != sf::Socket::Done)
-	{
-		std::cout << "Error - SERVER --- TCP ---> Failed to bind server to TCP port" << std::endl;
-		isHost = false;
-	}
-	socketSelector.add(tcpListener);	
-}
-
-void P2P::tcpStatusCheck() // CLIENT - attempts to connect to tcp socket/// 
-{
-	sf::Socket::Status tcpSocketStatus = tcpSocket.connect("localhost", 53000);
-	tcpListener.setBlocking(false);
-	socketSelector.add(tcpSocket);
-	if (tcpSocketStatus != sf::Socket::Done)
-	{
-		std::cout << "Error -- CLIENT --- TCP ---> Cannot bind to TCP socket" << std::endl; // error message if TCP socket fails to bind
-	}
-
-	std::cout << "-- CLIENT --- TCP ---> TCP socket is binding" << std::endl;
-}
-
-void P2P::udpBindServer() // setting server side to bind to port 53000
-{
-	if (udpSocketServer.bind(53000) != sf::Socket::Done)
-	{
-		std::cout << "Error - SERVER ---> UDP ---> Failed to bind Server to UPD port" << std::endl;
-	}
-	socketSelector.add(udpSocketServer);
-}
-
-void P2P::udpBindClient() // binding UDP socket on the client side to any port available which will be chosen at random and unpredictable to determine which port it will be
-{
-	if (udpSocketClient.bind(sf::Socket::AnyPort) != sf::Socket::Done)
-	{
-		std::cout << "Error -- CLIENT ---> UDP ---> Failed to bind server to UPD port on client side" << std::endl;
-	}
-	udpSocketClient.setBlocking(false);
-	socketSelector.add(udpSocketClient);
-	sf::Packet uDPPacket;
-	uDPPacket << "PlayerJoined" << udpSocketClient.getLocalPort();
-	sendPacket(uDPPacket);
-}
-
-
-
-void P2P::checkIfThereIsHost() // checks if the the application is a host or a client
-{
-	// server area
-	 // if the host is true, the application turns to be a client
+	// ------------------------------------------------ Server Area ------------------------------------------------------
+	// -------------------------------------------------------------------------------------------------------------------
+	
 	if (socketSelector.wait(sf::milliseconds(1))) // returns as soon as at least one socket has some data available to be received.
 	{
 		if (socketSelector.isReady(tcpListener) && isHost)	// This function must be used after a call to Wait, to know
 															// which sockets are ready to receive data and will prevent 
-															// blocking because there is data to be received
+															// blocking because there is data to be received.
+															// Also, if host is true, the application turns to be a client
 		{
-			std::cout << "----------------------------------------------------------------------------------------" << std::endl;
-			std::cout << "--- Is Host ---\n" << std::endl;
+			std::cout << "----------------------------------------------------------------------------" << std::endl;
+			std::cout << "--------------------------------- Host -------------------------------------\n" << std::endl;
+			// TCP Section -----------------------------------------------------------------------------------------------
 			sf::TcpSocket* tempTCPSocket = new sf::TcpSocket;
 
 			if (tcpListener.accept(*tempTCPSocket) != sf::Socket::Done) // function is in blocking mode until a connection is actually received. 
@@ -76,7 +33,6 @@ void P2P::checkIfThereIsHost() // checks if the the application is a host or a c
 				std::cout << "Error - SERVER ---> TCP ---> Failed to connect to client" << std::endl;
 			}
 
-			// TCP Section --------------------------------------------------------------------------------------------------------
 			tempTCPSocket->setBlocking(false);
 			socketSelector.add(*tempTCPSocket);
 			Client* playerClientPacket = new Client(tempTCPSocket);
@@ -84,6 +40,7 @@ void P2P::checkIfThereIsHost() // checks if the the application is a host or a c
 			client.push_back(playerClientPacket);
 			std::cout << "- SERVER ---> TCP ---> A new client has connected\n" << std::endl;
 
+			// --- Packet server side TCP sending end ---
 			sf::Packet packet; 
 			std::string clientEntersRoom = "- SERVER ---> PACKET ---> TCP ---> A Player has entered the Room";
 			packet << clientEntersRoom;
@@ -101,6 +58,7 @@ void P2P::checkIfThereIsHost() // checks if the the application is a host or a c
 		else	// if the socket selector is not ready, block and iterate through the client vector and assign the id to each client
 				// the server will then utilise this to determine which player is which and will relay this over to the other clients
 		{
+			// --- Packet Server Side TCP receiving end ---
 			sf::Packet packet;
 			for (auto& c : client)
 			{
@@ -124,9 +82,10 @@ void P2P::checkIfThereIsHost() // checks if the the application is a host or a c
 					}
 					
 				}
-				// UDP Section -------------------------------------------------------------------------------------
+				// UDP Section -------------------------------------------------------------------------------------------
 				if (socketSelector.isReady(udpSocketServer))
 				{
+					// --- Packet Server Side UDP reveiving end --- 
 					sf::Packet packet;
 					sf::IpAddress clientAddress;
 					unsigned short clientPort;
@@ -143,15 +102,16 @@ void P2P::checkIfThereIsHost() // checks if the the application is a host or a c
 			std::cout << "- SERVER ---> UDP ---> Socket is ready on CLIENT Side" << std::endl;
 		}
 
-		// client area---------------------------------------------------------------------------------------------
+		// ------------------------------------------------ Client Area ------------------------------------------------------
+		// -------------------------------------------------------------------------------------------------------------------
 		if (socketSelector.isReady(tcpSocket))
 		{
 			if (!getIsHost()) 
 			{
-			std::cout << "----------------------------------------------------------------------------------------" << std::endl;
-			std::cout << "--- Is Client ---\n" << std::endl;
+				std::cout << "----------------------------------------------------------------------------" << std::endl;
+				std::cout << "--------------------------------- Client -----------------------------------\n" << std::endl;
 			}
-
+			// --- Packet Client Side TCP reveiving end --- 
 			sf::Packet packet;
 			packet = recievePacket(tcpSocket);
 			std::string clientEntersRoom;
@@ -159,7 +119,7 @@ void P2P::checkIfThereIsHost() // checks if the the application is a host or a c
 			packet >> clientEntersRoom;
 			std::cout << clientEntersRoom << std::endl;
 
-			// sending udp packet
+			// --- Packet Client Side UDP sending end ---
 			sf::Packet udpPacket;
 			udpPacket << "-- CLIENT ---> PACKET ---> Hello world!\n";
 			sf::Socket::Status status = udpSocketClient.send(udpPacket, "localhost", 53000);
@@ -173,11 +133,54 @@ void P2P::checkIfThereIsHost() // checks if the the application is a host or a c
 	}
 }
 
-bool P2P::getIsHost()
+// TCP 
+void P2P::tcpListeningCheck()// SERVER looking/listening for available socket
 {
-	return isHost;
+	if (tcpListener.listen(53000) != sf::Socket::Done)
+	{
+		std::cout << "Error - SERVER --- TCP ---> Failed to bind server to TCP port" << std::endl;
+		isHost = false;
+	}
+	socketSelector.add(tcpListener);	
 }
 
+void P2P::tcpStatusCheck() // CLIENT - attempts to connect to tcp socket/// 
+{
+	sf::Socket::Status tcpSocketStatus = tcpSocket.connect("localhost", 53000);
+	tcpListener.setBlocking(false);
+	socketSelector.add(tcpSocket);
+	if (tcpSocketStatus != sf::Socket::Done)
+	{
+		std::cout << "Error -- CLIENT --- TCP ---> Cannot bind to TCP socket" << std::endl; // error message if TCP socket fails to bind
+	}
+
+	std::cout << "-- CLIENT --- TCP ---> TCP socket is binding" << std::endl;
+}
+
+// UDP
+void P2P::udpBindServer() // setting server side to bind to port 53000
+{
+	if (udpSocketServer.bind(53000) != sf::Socket::Done)
+	{
+		std::cout << "Error - SERVER ---> UDP ---> Failed to bind Server to UPD port" << std::endl;
+	}
+	socketSelector.add(udpSocketServer);
+}
+
+void P2P::udpBindClient() // binding UDP socket on the client side to any port available which will be chosen at random and unpredictable to determine which port it will be
+{
+	if (udpSocketClient.bind(sf::Socket::AnyPort) != sf::Socket::Done)
+	{
+		std::cout << "Error -- CLIENT ---> UDP ---> Failed to bind server to UPD port on client side" << std::endl;
+	}
+	udpSocketClient.setBlocking(false);
+	socketSelector.add(udpSocketClient);
+	sf::Packet uDPPacket;
+	uDPPacket << "PlayerJoined" << udpSocketClient.getLocalPort();
+	sendPacket(uDPPacket);
+}
+
+// Sending/Receiving Packets
 void P2P::sendPacket(sf::Packet p)
 {
 		if (socketSelector.isReady(tcpSocket)) // checks if the tcp Socket is ready to send data
@@ -202,4 +205,9 @@ sf::Packet P2P::recievePacket(sf::TcpSocket &tcpS)
 			std::cout << "--- PACKET ---> TCP ---> Receive status: " << status << std::endl;
 		}
 	return packet;
+}
+
+bool P2P::getIsHost()
+{
+	return isHost;
 }
