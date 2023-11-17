@@ -44,7 +44,7 @@ int main() {
 					
 					//netSimulator.Reset();
 					nextPrint = startTime;
-					printf( "\n\n--------RESET--------\n\n" );
+					std::cout << "\n\n--------RESET--------\n\n" << std::endl;
 				}
 			}
 		}
@@ -58,15 +58,5 @@ int main() {
 		//window.draw(debugText);
 		window.display();		
 	}
-
-	// setting up UDP socket
-	//sf::UdpSocket udpSocket;
-	//if (udpSocket.bind(54000) != sf::Socket::Done)// error message if UDP socket fails to bind
-	//{
-	//	std::cout << "Error binding UDP socket";
-	//udpSocket.send(packet, recipientAddress, recipientPort);
-	//udpSocket.receive(packet, senderAddress, senderPort);
-	//}
-
 	return 0;
 }

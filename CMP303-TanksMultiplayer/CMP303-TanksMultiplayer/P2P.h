@@ -14,21 +14,6 @@ struct Client // struct that holds all client data. All information that needs t
 							// this functions as an ID to be passed on and determines who is which player
 	sf::Vector2f playerPos; // to store tanks coordinates
 };
-//sf::Packet& operator <<(sf::Packet& packet, const Client& client) 
-//{
-//	// Insert data from client's members into packet
-//	packet << client.tcpID, client.playerPos;
-//	// e.g., packet << client.someMember;
-//	return packet;
-//}
-//
-//sf::Packet& operator >>(sf::Packet& packet, Client& client) 
-//{
-//	// Extract data from packet and assign to client's members
-//	packet >> client.playerPos;
-//	// e.g., packet >> client.someMember;
-//	return packet;
-//}
 
 class P2P
 {
@@ -47,11 +32,10 @@ private:
 	std::vector<Tank*> tank; 
 	std::vector<Client*> client; // vector of client pointers that will be pushed back once a client joins at which point the client vector element is assigned to the client struct ID
 
-
-
 public:
 	P2P(std::vector<Tank*> t);
 	~P2P();
+
 	void tcpListeningCheck();
 	void tcpStatusCheck();
 	void udpBindServer();
