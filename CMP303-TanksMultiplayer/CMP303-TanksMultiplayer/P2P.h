@@ -9,6 +9,7 @@ struct Client // struct that holds all client data. All information that needs t
 	{
 		this->tcpID = tcpID;
 	}
+	int port;
 	sf::TcpSocket* tcpID;	// pointer for the tcp client socket. this is used to assign a tcpSocket element when pushing back a new tcpclient element in the client vector.
 							// this functions as an ID to be passed on and determines who is which player
 	sf::Vector2f playerPos; // to store tanks coordinates
@@ -37,6 +38,9 @@ private:
 	sf::TcpListener tcpListener; // setting up the TCP listener
 	sf::TcpSocket tcpSocket; // setting up TCP socket
 
+	sf::UdpSocket udpSocketServer;
+	sf::UdpSocket udpSocketClient;
+
 	bool isHost = true; // bool to determine the host. if a host already exists then set to false and stop programme from listening for clients
 	std::string hasJoined;
 
@@ -50,10 +54,14 @@ public:
 	~P2P();
 	void tcpListeningCheck();
 	void tcpStatusCheck();
+	void udpBindServer();
+	void udpBindClient();
+	
+
 	void checkIfThereIsHost();
 	bool getIsHost();
 	//void socketSelection();
-	void sendClientPacket(sf::Packet p); // function to send package data
-	sf::Packet recieveClientPacket(sf::TcpSocket& tcpS); // funtion to recieve package data
+	void sendPacket(sf::Packet p); // function to send package data
+	sf::Packet recievePacket(sf::TcpSocket& tcpS); // funtion to recieve package data
 };
 
