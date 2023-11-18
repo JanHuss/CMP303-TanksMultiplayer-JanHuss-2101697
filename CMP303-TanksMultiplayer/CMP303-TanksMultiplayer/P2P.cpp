@@ -40,25 +40,17 @@ void P2P::peerToPeerArchitecture()
 			client.push_back(playerClientPacket);
 			std::cout << "- SERVER ---> TCP ---> A new client has connected\n" << std::endl;
 
-			// --- Packet server side TCP sending end ---
-			sf::Packet packet; 
-			std::string clientEntersRoom = "- SERVER ---> PACKET ---> TCP ---> A Player has entered the Room";
-			packet << clientEntersRoom;
-		
-			sf::Socket::Status status = playerClientPacket->tcpID->send(packet);
-			if (status != sf::Socket::Done)
-			{
-				std::cout << "Error - SERVER ---> TCP ---> Lost connection" << std::endl;
-			}
-			std::cout << "- SERVER ---> TCP ---> Send Status: " << status << std::endl;
+			// --- Packet SERVER side TCP: SENDING ---
+			sendTCPPacketServer(playerClientPacket);
 			
-			//tank.push_back(new Tank("Blue", 90));			
-			//tank[0]->setPosition(40, 480 / 2);
+			// Add Tank to game
+			tank.push_back(new Tank("Blue", 90));			
+			tank[0]->setPosition(40, 480 / 2);
 		}
 		else	// if the socket selector is not ready, block and iterate through the client vector and assign the id to each client
 				// the server will then utilise this to determine which player is which and will relay this over to the other clients
 		{
-			// --- Packet Server Side TCP receiving end ---
+			// --- Packet SERVER side TCP: RECIEVING ---
 			sf::Packet packet;
 			for (auto& c : client)
 			{
@@ -85,7 +77,7 @@ void P2P::peerToPeerArchitecture()
 				// UDP Section -------------------------------------------------------------------------------------------
 				if (socketSelector.isReady(udpSocketServer))
 				{
-					// --- Packet Server Side UDP reveiving end --- 
+					// --- Packet SERVER side UDP: RECIEVING --- 
 					sf::Packet packet;
 					sf::IpAddress clientAddress;
 					unsigned short clientPort;
@@ -111,17 +103,25 @@ void P2P::peerToPeerArchitecture()
 				std::cout << "----------------------------------------------------------------------------" << std::endl;
 				std::cout << "--------------------------------- Client -----------------------------------\n" << std::endl;
 			}
-			// --- Packet Client Side TCP reveiving end --- 
-			sf::Packet packet;
-			packet = recievePacket(tcpSocket);
+			// --- Packet CLIENT side TCP: RECIEVING --- 
+			sf::Packet packet = recieveTCPPacket(tcpSocket);
 			std::string clientEntersRoom;
-			clientEntersRoom = "-- CLIENT ---> PACKET ---> Oh a new player connected!\n";
+			
 			packet >> clientEntersRoom;
 			std::cout << clientEntersRoom << std::endl;
 
-			// --- Packet Client Side UDP sending end ---
+			// --- Packet CLIENT side TCP: SENDING --- ??? NOT SURE IF CORRECT -----------------------------------------------
+			//sf::TcpSocket* tempTCPSocket = new sf::TcpSocket;
+			//tempTCPSocket->setBlocking(false);
+			//socketSelector.add(*tempTCPSocket);
+			//Client* playerClientPacket = new Client(tempTCPSocket);
+			//sendTCPPacketServer(playerClientPacket);
+			//std::cout << "- CLIENT TO SERVER ---> TCP ---> A new CLIENT has connected\n" << std::endl;
+			// ---------------------------------------------------------------------------------------------------------------
+
+			// --- Packet CLIENT side UDP: SENDING ---
 			sf::Packet udpPacket;
-			udpPacket << "-- CLIENT ---> PACKET ---> Hello world!\n";
+			udpPacket << "---> CLIENT TO SERVER ---> PACKET ---> UDP ---> Hello world!\n";
 			sf::Socket::Status status = udpSocketClient.send(udpPacket, "localhost", 53000);
 			if (status != sf::Socket::Done)
 			{
@@ -181,6 +181,7 @@ void P2P::udpBindClient() // binding UDP socket on the client side to any port a
 }
 
 // Sending/Receiving Packets
+// TCP
 void P2P::sendPacket(sf::Packet p)
 {
 		if (socketSelector.isReady(tcpSocket)) // checks if the tcp Socket is ready to send data
@@ -192,7 +193,21 @@ void P2P::sendPacket(sf::Packet p)
 		}
 }
 
-sf::Packet P2P::recievePacket(sf::TcpSocket &tcpS)
+void P2P::sendTCPPacketServer(Client* pCP)
+{
+	sf::Packet packet;
+	std::string clientEntersRoom = "--- SERVER TO CLIENT ---> PACKET ---> TCP ---> A Player has entered the Room";
+	packet << clientEntersRoom;
+
+	sf::Socket::Status status = pCP->tcpID->send(packet);
+	if (status != sf::Socket::Done)
+	{
+		std::cout << "Error - SERVER ---> TCP ---> Lost connection to CLIENT" << std::endl;
+	}
+	std::cout << "- SERVER ---> TCP ---> Send Status from SERVER: " << status << std::endl;
+}
+
+sf::Packet P2P::recieveTCPPacket(sf::TcpSocket &tcpS)
 {
 	sf::Packet packet;
 		if (socketSelector.isReady(tcpS)) // checks if the tcp Socket is ready to receive data
@@ -200,12 +215,13 @@ sf::Packet P2P::recievePacket(sf::TcpSocket &tcpS)
 			sf::Socket::Status status = tcpS.receive(packet);
 			if (status != sf::Socket::Done)
 			{
-				std::cout << "Error --- PACKET ---> TCP ---> Cannot recieve data" << std::endl;
+				std::cout << "Error --- PACKET ---> TCP ---> Cannot recieve data from CLIENT" << std::endl;
 			}
-			std::cout << "--- PACKET ---> TCP ---> Receive status: " << status << std::endl;
+			std::cout << "--- PACKET ---> TCP ---> Receiving from CLIENT status: " << status << std::endl;
 		}
 	return packet;
 }
+
 
 bool P2P::getIsHost()
 {

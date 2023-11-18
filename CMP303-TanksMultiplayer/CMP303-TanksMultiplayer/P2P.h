@@ -46,7 +46,8 @@ public:
 
 	//void socketSelection();
 	void sendPacket(sf::Packet p); // function to send package data
-	sf::Packet recievePacket(sf::TcpSocket& tcpS); // funtion to recieve package data
+	void sendTCPPacketServer(Client* pCP);
+	sf::Packet recieveTCPPacket(sf::TcpSocket& tcpS); // funtion to recieve package data
 	
 	bool getIsHost();
 };
