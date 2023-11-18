@@ -77,13 +77,23 @@ void P2P::peerToPeerArchitecture()
 				// UDP Section -------------------------------------------------------------------------------------------
 				if (socketSelector.isReady(udpSocketServer))
 				{
+					// --- Packet SERVER side UDP: SENDING ---
+					//sf::Packet sendUDPPacket;
+					//sendUDPPacket << "--- SERVER to CLIENT ---> PACKET ---> UDP ---> Hi CLIENT! I'm SERVER! Nice of you to join over UDP!";
+					//sf::Socket::Status status = udpSocketClient.send(sendUDPPacket, "localhost", 53000);
+					//if (status != sf::Socket::Done)
+					//{
+					//	std::cout << "Error -- SERVER ---> UDP ---> Status: " << status << std::endl;
+					//}
+					//std::cout << "-- SERVER ---> UDP ---> Status: " << status << std::endl;
+
 					// --- Packet SERVER side UDP: RECIEVING --- 
-					sf::Packet packet;
 					sf::IpAddress clientAddress;
 					unsigned short clientPort;
-					udpSocketServer.receive(packet, clientAddress, clientPort);
+					sf::Packet recieveUDPPacket;
+					udpSocketServer.receive(recieveUDPPacket, clientAddress, clientPort);
 					std::string clientData;
-					packet >> clientData;
+					recieveUDPPacket >> clientData;
 
 					std::cout << clientData << std::endl;
 				}
@@ -103,32 +113,38 @@ void P2P::peerToPeerArchitecture()
 				std::cout << "----------------------------------------------------------------------------" << std::endl;
 				std::cout << "--------------------------------- Client -----------------------------------\n" << std::endl;
 			}
+
+			// --- Packet CLIENT side TCP: SENDING ---
+			sf::Packet sendTCPPacket;
+			sendTCPPacket << "--- CLIENT TO SERVER ---> PACKET ---> TCP ---> Hi, I'm A CLIENT. I hope you don't mind me joining =)\n";
+			sendPacket(sendTCPPacket);
+
 			// --- Packet CLIENT side TCP: RECIEVING --- 
-			sf::Packet packet = recieveTCPPacket(tcpSocket);
+			sf::Packet receiveTCPPacket = recieveTCPPacket(tcpSocket);
 			std::string clientEntersRoom;
 			
-			packet >> clientEntersRoom;
+			receiveTCPPacket >> clientEntersRoom;
 			std::cout << clientEntersRoom << std::endl;
-
-			// --- Packet CLIENT side TCP: SENDING --- ??? NOT SURE IF CORRECT -----------------------------------------------
-			//sf::TcpSocket* tempTCPSocket = new sf::TcpSocket;
-			//tempTCPSocket->setBlocking(false);
-			//socketSelector.add(*tempTCPSocket);
-			//Client* playerClientPacket = new Client(tempTCPSocket);
-			//sendTCPPacketServer(playerClientPacket);
-			//std::cout << "- CLIENT TO SERVER ---> TCP ---> A new CLIENT has connected\n" << std::endl;
-			// ---------------------------------------------------------------------------------------------------------------
 
 			// --- Packet CLIENT side UDP: SENDING ---
 			sf::Packet udpPacket;
-			udpPacket << "---> CLIENT TO SERVER ---> PACKET ---> UDP ---> Hello world!\n";
+			udpPacket << "--- CLIENT TO SERVER ---> PACKET ---> UDP ---> Hello SERVER! I'm a CLIENT sending a message over UDP\n";
 			sf::Socket::Status status = udpSocketClient.send(udpPacket, "localhost", 53000);
 			if (status != sf::Socket::Done)
 			{
-				//printf("Error status: " + status);
 				std::cout << "Error -- CLIENT ---> UDP ---> Status: " << status << std::endl;
 			}
 			std::cout << "-- CLIENT ---> UDP ---> Status: " << status << std::endl;
+
+			// --- Packe CLIENT side UDP: RECIEVING ---
+			//sf::IpAddress serverAddress;
+			//unsigned short serverPort;
+			//sf::Packet recieveUDPPacket;
+			//udpSocketServer.receive(recieveUDPPacket, serverAddress, serverPort);
+			//std::string clientData;
+			//recieveUDPPacket >> clientData;
+			//
+			//std::cout << clientData << std::endl;
 		}
 	}
 }
@@ -196,7 +212,7 @@ void P2P::sendPacket(sf::Packet p)
 void P2P::sendTCPPacketServer(Client* pCP)
 {
 	sf::Packet packet;
-	std::string clientEntersRoom = "--- SERVER TO CLIENT ---> PACKET ---> TCP ---> A Player has entered the Room";
+	std::string clientEntersRoom = "--- SERVER TO CLIENT ---> PACKET ---> TCP ---> Hi I'm SERVER welcome new CLIENT";
 	packet << clientEntersRoom;
 
 	sf::Socket::Status status = pCP->tcpID->send(packet);

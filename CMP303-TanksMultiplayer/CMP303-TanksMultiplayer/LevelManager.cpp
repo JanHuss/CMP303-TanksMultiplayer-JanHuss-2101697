@@ -15,10 +15,14 @@ LevelManager::LevelManager(int windowW, int windowH)
 
 	// Networking Peer to Peer
 	p2p = new P2P(tank);
+
 	p2p->tcpListeningCheck();
 	p2p->tcpStatusCheck();
+
 	p2p->udpBindServer();
 	p2p->udpBindClient();
+
+	// initialising players tank
 	tank.push_back(new Tank("green", playerOneRotation));
 	tank[0]->setPosition(40, windowHeight / 2);
 }
