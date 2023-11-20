@@ -4,152 +4,149 @@ P2P::P2P(std::vector<Tank*>* t) : tank(t)
 {
 	hasJoined = "A client has joined";
 }
-
 P2P::~P2P()
 {
 }
 
-// Peer to Peer Architecture 
+// --- Peer to Peer Architecture ---
 void P2P::peerToPeerArchitecture()
+{		
+	if (socketSelector.wait(sf::milliseconds(1))) // returns as soon as at least one socket has some data available to be received.
+	{
+		// --- Server Area ---
+		serverSetup();
+
+		// --- Client Area ---
+		clientSetup();
+	}
+}
+void P2P::serverSetup()
 {
 	// ------------------------------------------------ Server Area ------------------------------------------------------
 	// -------------------------------------------------------------------------------------------------------------------
-	
-	if (socketSelector.wait(sf::milliseconds(1))) // returns as soon as at least one socket has some data available to be received.
+	if (socketSelector.isReady(tcpListener) && isHost)	// This function must be used after a call to Wait, to know
+														// which sockets are ready to receive data and will prevent 
+														// blocking because there is data to be received.
+														// Also, if host is true, the application turns to be a client
 	{
-		if (socketSelector.isReady(tcpListener) && isHost)	// This function must be used after a call to Wait, to know
-															// which sockets are ready to receive data and will prevent 
-															// blocking because there is data to be received.
-															// Also, if host is true, the application turns to be a client
+		std::cout << "----------------------------------------------------------------------------" << std::endl;
+		std::cout << "--------------------------------- Server -----------------------------------\n" << std::endl;
+		// TCP Section -----------------------------------------------------------------------------------------------
+		sf::TcpSocket* tempTCPSocket = new sf::TcpSocket;
+
+		if (tcpListener.accept(*tempTCPSocket) != sf::Socket::Done) // function is in blocking mode until a connection is actually received. 
+			// so if not accepting, print error
+		{
+			std::cout << "Error - SERVER ---> TCP ---> Failed to connect to client" << std::endl;
+		}
+
+		tempTCPSocket->setBlocking(false);
+		socketSelector.add(*tempTCPSocket);
+		Client* playerClientPacket = new Client(tempTCPSocket);
+
+		client.push_back(playerClientPacket);
+		std::cout << "- SERVER ---> TCP ---> A new client has connected\n" << std::endl;
+
+		// --- Packet SERVER side TCP: SENDING ---
+		sf::Packet packet;
+		std::string clientEntersRoom = "--- SERVER TO CLIENT ---> PACKET ---> TCP ---> Hi I'm SERVER welcome new CLIENT";
+		packet << clientEntersRoom;
+		sendTCPPacketServer(packet, playerClientPacket);
+
+		// Add Tank to game
+		tank->push_back(new Tank("green", 270));
+		//tank[0].
+	}
+	else	// if the socket selector is not ready, block and iterate through the client vector and assign the id to each client
+			// the server will then utilise this to determine which player is which and will relay this over to the other clients
+	{
+		// --- Packet SERVER side TCP: RECIEVING ---
+		sf::Packet packet;
+		for (auto& c : client)
+		{
+			if (socketSelector.isReady(*c->tcpID))
+			{
+				sf::Socket::Status status = c->tcpID->receive(packet);
+				if (status != sf::Socket::Done)
+				{
+					std::cout << "Error - SERVER ---> TCP ---> Status: " << status << std::endl;
+				}
+
+				std::string clientEntersRoom;
+				packet >> clientEntersRoom;
+				std::cout << clientEntersRoom << std::endl;
+				if (clientEntersRoom._Equal("PlayerJoined"))
+				{
+					unsigned short port;
+					packet >> port;
+					c->port = port;
+					std::cout << "- SERVER ---> UDP ---> Client port: " << port << std::endl;
+					sf::Packet udppacket;
+					udppacket << "- SERVER ---> UDP ---> sending test packet ";
+					sendUDPPacketServer(udppacket, c);
+				}
+			}
+			// UDP Section -------------------------------------------------------------------------------------------
+			if (socketSelector.isReady(udpSocketServer))
+			{
+				// --- Packet SERVER side UDP: RECIEVING --- 
+				std::string clientEntersRoom;
+				std::string clientData;
+				sf::Packet uDPPacket;
+				uDPPacket = recieveUDPPacketServer();
+				uDPPacket >> clientData;
+				std::cout << "Client data: " << clientData << std::endl;
+			}
+		}
+	}
+}
+void P2P::clientSetup()
+{
+	// ------------------------------------------------ Client Area ------------------------------------------------------
+	// -------------------------------------------------------------------------------------------------------------------
+	//if (socketSelector.wait(sf::milliseconds(1)))
+		//{
+	if (socketSelector.isReady(tcpSocket))
+	{
+		if (!getIsHost())
 		{
 			std::cout << "----------------------------------------------------------------------------" << std::endl;
-			std::cout << "--------------------------------- Host -------------------------------------\n" << std::endl;
-			// TCP Section -----------------------------------------------------------------------------------------------
-			sf::TcpSocket* tempTCPSocket = new sf::TcpSocket;
-
-			if (tcpListener.accept(*tempTCPSocket) != sf::Socket::Done) // function is in blocking mode until a connection is actually received. 
-																		// so if not accepting, print error
-			{
-				std::cout << "Error - SERVER ---> TCP ---> Failed to connect to client" << std::endl;
-			}
-
-			tempTCPSocket->setBlocking(false);
-			socketSelector.add(*tempTCPSocket);
-			Client* playerClientPacket = new Client(tempTCPSocket);
-
-			client.push_back(playerClientPacket);
-			std::cout << "- SERVER ---> TCP ---> A new client has connected\n" << std::endl;
-
-			// --- Packet SERVER side TCP: SENDING ---
-			sf::Packet packet;
-			std::string clientEntersRoom = "--- SERVER TO CLIENT ---> PACKET ---> TCP ---> Hi I'm SERVER welcome new CLIENT";
-			packet << clientEntersRoom;
-			sendTCPPacketServer(packet, playerClientPacket);
-			
-			// Add Tank to game
-			tank->push_back(new Tank("green", 270));			
-			//tank[0].
+			std::cout << "--------------------------------- Client -----------------------------------\n" << std::endl;
 		}
-		else	// if the socket selector is not ready, block and iterate through the client vector and assign the id to each client
-				// the server will then utilise this to determine which player is which and will relay this over to the other clients
+
+		// --- Packet CLIENT side TCP: SENDING ---
+		sf::Packet sendTCPPacket;
+		sendTCPPacket << "--- CLIENT TO SERVER ---> PACKET ---> TCP ---> Hi, I'm A CLIENT. I hope you don't mind me joining =)\n";
+		sendPacketClient(sendTCPPacket);
+
+		// --- Packet CLIENT side TCP: RECIEVING --- 
+		sf::Packet receiveTCPPacket = recieveTCPPacket(tcpSocket);
+		std::string clientEntersRoom;
+
+		receiveTCPPacket >> clientEntersRoom;
+		std::cout << clientEntersRoom << std::endl;
+
+		// add client tank
+		if (!isHost)
 		{
-			// --- Packet SERVER side TCP: RECIEVING ---
-			sf::Packet packet;
-			for (auto& c : client)
-			{
-				if (socketSelector.isReady(*c->tcpID))
-				{
-					sf::Socket::Status status = c->tcpID->receive(packet);
-					if (status != sf::Socket::Done)
-					{
-						std::cout << "Error - SERVER ---> TCP ---> Status: " << status << std::endl;
-					}
-					
-					std::string clientEntersRoom;
-					packet >> clientEntersRoom;
-					std::cout << clientEntersRoom << std::endl;
-					if (clientEntersRoom._Equal("PlayerJoined"))
-					{
-						unsigned short port;
-						packet >> port;
-						c->port = port;
-						std::cout << "- SERVER ---> UDP ---> Client port: " << port << std::endl;
-						sf::Packet udppacket;
-						udppacket << "- SERVER ---> UDP ---> sending test packet ";
-						sendUDPPacketServer(udppacket, c);
-					}
-
-					
-				}
-				// UDP Section -------------------------------------------------------------------------------------------
-				if (socketSelector.isReady(udpSocketServer))
-				{
-					// --- Packet SERVER side UDP: RECIEVING --- 
-					std::string clientEntersRoom;
-					std::string clientData;
-					sf::Packet uDPPacket;
-					uDPPacket = recieveUDPPacketServer();
-					uDPPacket >> clientData;
-					std::cout << "Client data: " << clientData << std::endl;
-					//if (clientEntersRoom._Equal("PlayerJoined"))
-					//{
-					//	uDPPacket >> clientPort;
-					//	c->port = clientPort;
-					//
-					//}
-
-					
-				}
-			}
+			tank->push_back(new Tank("blue", 90));
+			tank->push_back(new Tank("green", 270));
 		}
-
-		// ------------------------------------------------ Client Area ------------------------------------------------------
-		// -------------------------------------------------------------------------------------------------------------------
-		//if (socketSelector.wait(sf::milliseconds(1)))
-		//{
-			if (socketSelector.isReady(tcpSocket))
-			{
-				if (!getIsHost())
-				{
-					std::cout << "----------------------------------------------------------------------------" << std::endl;
-					std::cout << "--------------------------------- Client -----------------------------------\n" << std::endl;
-				}
-
-				// --- Packet CLIENT side TCP: SENDING ---
-				sf::Packet sendTCPPacket;
-				sendTCPPacket << "--- CLIENT TO SERVER ---> PACKET ---> TCP ---> Hi, I'm A CLIENT. I hope you don't mind me joining =)\n";
-				sendPacketClient(sendTCPPacket);
-
-				// --- Packet CLIENT side TCP: RECIEVING --- 
-				sf::Packet receiveTCPPacket = recieveTCPPacket(tcpSocket);
-				std::string clientEntersRoom;
-
-				receiveTCPPacket >> clientEntersRoom;
-				std::cout << clientEntersRoom << std::endl;
-
-				// add client tank
-				if (!isHost)
-				{
-					tank->push_back(new Tank("blue", 90));
-					tank->push_back(new Tank("green", 270));
-				}
-			}
-			if (socketSelector.isReady(udpSocketClient))
-			{
-
-				// --- PackeT CLIENT side UDP: RECIEVING ---			
-				std::string clientData;
-				recieveUDPPacketClient() >> clientData;;
-				std::cout << clientData << std::endl;
-
-				// --- Packet CLIENT SIDE UDP: INIT SEND ---
-				sf::Packet udpPacket;
-				udpPacket << "--- CLIENT TO SERVER ---> PACKET ---> UDP ---> Hello SERVER! I'm a CLIENT sending a message over UDP\n";
-				sendUDPPacketClient(udpPacket);
-			}
-		//}
-
 	}
+	if (socketSelector.isReady(udpSocketClient))
+	{
+
+		// --- PackeT CLIENT side UDP: RECIEVING ---			
+		std::string clientData;
+		recieveUDPPacketClient() >> clientData;;
+		std::cout << clientData << std::endl;
+
+		// --- Packet CLIENT SIDE UDP: INIT SEND ---
+		sf::Packet udpPacket;
+		udpPacket << "--- CLIENT TO SERVER ---> PACKET ---> UDP ---> Hello SERVER! I'm a CLIENT sending a message over UDP\n";
+		sendUDPPacketClient(udpPacket);
+	}
+	//}
 }
 
 // --- TCP Setup ---
@@ -258,7 +255,6 @@ void P2P::sendUDPPacketServer(sf::Packet p, Client* c)
 	}
 	std::cout << "-- SERVER ---> UDP ---> Status: " << status << std::endl;
 }
-
 sf::Packet P2P::recieveUDPPacketClient()
 {
 	sf::IpAddress clientAddress;
@@ -290,7 +286,7 @@ sf::Packet P2P::recieveUDPPacketServer()
 	return recieveUDPPacket;
 }
 
-// Getters
+// --- Getters ---
 bool P2P::getIsHost()
 {
 	return isHost;

@@ -2,7 +2,6 @@
 #include "SFML/Network.hpp"
 #include "Tank.h"
 
-
 struct Client // Struct that holds all client data. All information that needs to be sent and recieved in one location
 {
 	Client(sf::TcpSocket* tcpID)
@@ -36,12 +35,13 @@ public:
 	P2P(std::vector<Tank*>* t);
 	~P2P();
 
+	// --- Peer to Peer Architecture ---
 	void peerToPeerArchitecture();	// Structure that runs the peer to peer networking system.
 									// First the network will check if the there is a HOST/SERVER available.
 									// If there isn't the application will take the HOST/SERVER role and initially 
-									// connect with itself as a CLIENT.
-									// Any further applications that join the HOST will then become CLIENTS
-									
+	void serverSetup();				// connect with itself as a CLIENT.
+	void clientSetup();				// Any further applications that join the HOST will then become CLIENTS	
+
 	// --- TCP Setup ---
 	void tcpListeningCheck();	// Listening for HOST. If none, then set this application to HOST
 	void tcpStatusCheck();		// CLIENT attempts to connect to TCP socket
@@ -61,6 +61,7 @@ public:
 	sf::Packet recieveUDPPacketClient(); // Recieve UDP packet information from SERVER
 	sf::Packet recieveUDPPacketServer(); // Recieve UDP packet information from CLIENT
 	
+	// --- Getters ---
 	bool getIsHost();
 };
 
