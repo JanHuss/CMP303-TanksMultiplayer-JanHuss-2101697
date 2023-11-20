@@ -29,11 +29,11 @@ private:
 	bool isHost = true; // bool to determine the host. if a host already exists then set to false and stop programme from listening for clients
 	std::string hasJoined;
 
-	std::vector<Tank*> tank; 
+	std::vector<Tank*>* tank; 
 	std::vector<Client*> client; // vector of client pointers that will be pushed back once a client joins at which point the client vector element is assigned to the client struct ID
 
 public:
-	P2P(std::vector<Tank*> t);
+	P2P(std::vector<Tank*>* t);
 	~P2P();
 
 	void peerToPeerArchitecture();

@@ -14,7 +14,7 @@ LevelManager::LevelManager(int windowW, int windowH)
 	floor->floorInit();
 
 	// Networking Peer to Peer
-	p2p = new P2P(tank);
+	p2p = new P2P(&tank);
 
 	p2p->tcpListeningCheck();
 	p2p->tcpStatusCheck();
@@ -23,8 +23,8 @@ LevelManager::LevelManager(int windowW, int windowH)
 	p2p->udpBindClient();
 
 	// initialising players tank
-	tank.push_back(new Tank("green", playerOneRotation));
-	tank[0]->setPosition(40, windowHeight / 2);
+	//tank.push_back(new Tank("green", playerOneRotation));
+	//tank[0]->setPosition(40, windowHeight / 2);
 }
 
 LevelManager::~LevelManager()
@@ -45,7 +45,17 @@ void LevelManager::Update(float dt)
 		}
 
 	}
-	
+	//if (tank[0] && !playerOne)
+	//{
+	//	tank[0]->setPosition(40, windowHeight / 2);
+	//	//tank[0]->setRotation(playerOneRotation);
+	//	playerOne = true;
+	//}
+	//else if (tank[1] && !playerTwo)
+	//{
+	//	tank[1]->setPosition(windowWidth - 80, windowHeight / 2);
+	//	playerTwo = true;
+	//}
 	//playerScore->Update(dt);
 }
 

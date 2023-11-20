@@ -1,6 +1,6 @@
 #include "P2P.h"
 
-P2P::P2P(std::vector<Tank*> t) : tank(t)
+P2P::P2P(std::vector<Tank*>* t) : tank(t)
 {
 	hasJoined = "A client has joined";
 }
@@ -44,8 +44,8 @@ void P2P::peerToPeerArchitecture()
 			sendTCPPacketServer(playerClientPacket);
 			
 			// Add Tank to game
-			tank.push_back(new Tank("Blue", 90));			
-			tank[0]->setPosition(40, 480 / 2);
+			tank->push_back(new Tank("green", 270));			
+			//tank[0].
 		}
 		else	// if the socket selector is not ready, block and iterate through the client vector and assign the id to each client
 				// the server will then utilise this to determine which player is which and will relay this over to the other clients
@@ -145,6 +145,13 @@ void P2P::peerToPeerArchitecture()
 			//recieveUDPPacket >> clientData;
 			//
 			//std::cout << clientData << std::endl;
+
+			// add client tank
+			if (!isHost) 
+			{
+				tank->push_back(new Tank("blue", 90));
+				tank->push_back(new Tank("green", 270));
+			}
 		}
 	}
 }
