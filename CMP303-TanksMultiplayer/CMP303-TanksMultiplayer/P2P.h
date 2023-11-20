@@ -38,16 +38,24 @@ public:
 
 	void peerToPeerArchitecture();
 
+
+
+	// --- TCP ---
 	void tcpListeningCheck();
 	void tcpStatusCheck();
 
+	void sendPacketClient(sf::Packet p); // function to send package data
+	void sendTCPPacketServer(sf::Packet p, Client* pCP);
+	sf::Packet recieveTCPPacket(sf::TcpSocket& tcpS); // funtion to recieve package data
+
+	// --- UDP ---
 	void udpBindServer();
 	void udpBindClient();
 
-	//void socketSelection();
-	void sendPacket(sf::Packet p); // function to send package data
-	void sendTCPPacketServer(Client* pCP);
-	sf::Packet recieveTCPPacket(sf::TcpSocket& tcpS); // funtion to recieve package data
+	void sendUDPPacketClient(sf::Packet p);
+	void sendUDPPacketServer(sf::Packet p, Client* c);
+	sf::Packet recieveUDPPacketClient();
+	sf::Packet recieveUDPPacketServer();
 	
 	bool getIsHost();
 };
