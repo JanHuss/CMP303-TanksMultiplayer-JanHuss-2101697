@@ -141,6 +141,7 @@ void P2P::peerToPeerArchitecture()
 				std::string clientData;
 				recieveUDPPacketClient() >> clientData;;
 				std::cout << clientData << std::endl;
+
 				// --- Packet CLIENT SIDE UDP: INIT SEND ---
 				sf::Packet udpPacket;
 				udpPacket << "--- CLIENT TO SERVER ---> PACKET ---> UDP ---> Hello SERVER! I'm a CLIENT sending a message over UDP\n";
@@ -151,7 +152,7 @@ void P2P::peerToPeerArchitecture()
 	}
 }
 
-// TCP 
+// --- TCP Setup ---
 void P2P::tcpListeningCheck()// SERVER looking/listening for available socket
 {
 	if (tcpListener.listen(53000) != sf::Socket::Done)
@@ -159,10 +160,10 @@ void P2P::tcpListeningCheck()// SERVER looking/listening for available socket
 		std::cout << "Error - SERVER --- TCP ---> Failed to bind server to TCP port" << std::endl;
 		isHost = false;
 	}
+	
 	socketSelector.add(tcpListener);	
 }
-
-void P2P::tcpStatusCheck() // CLIENT - attempts to connect to tcp socket/// 
+void P2P::tcpStatusCheck() // CLIENT - attempts to connect to tcp socket
 {
 	sf::Socket::Status tcpSocketStatus = tcpSocket.connect("localhost", 53000);
 	tcpListener.setBlocking(false);
@@ -175,35 +176,7 @@ void P2P::tcpStatusCheck() // CLIENT - attempts to connect to tcp socket///
 	std::cout << "-- CLIENT --- TCP ---> TCP socket is binding" << std::endl;
 }
 
-// UDP
-void P2P::udpBindServer() // setting server side to bind to port 53000
-{
-	if (!getIsHost())
-	{
-		if (udpSocketServer.bind(53000) != sf::Socket::Done)
-		{
-			std::cout << "Error - SERVER ---> UDP ---> Failed to bind Server to UPD port" << std::endl;
-		}
-		udpSocketServer.setBlocking(false);
-		socketSelector.add(udpSocketServer);
-	}
-}
-
-void P2P::udpBindClient() // binding UDP socket on the client side to any port available which will be chosen at random and unpredictable to determine which port it will be
-{
-	if (udpSocketClient.bind(sf::Socket::AnyPort) != sf::Socket::Done)
-	{
-		std::cout << "Error -- CLIENT ---> UDP ---> Failed to bind server to UPD port on client side" << std::endl;
-	}
-	udpSocketClient.setBlocking(false);
-	socketSelector.add(udpSocketClient);
-	sf::Packet uDPPacket;
-	uDPPacket << "PlayerJoined" << udpSocketClient.getLocalPort();
-	sendPacketClient(uDPPacket);
-}
-
-// Sending/Receiving Packets
-// TCP
+// --- TCP Sending/Recieving ---
 void P2P::sendPacketClient(sf::Packet p)
 {
 		//if (socketSelector.isReady(tcpSocket)) // checks if the tcp Socket is ready to send data
@@ -214,8 +187,6 @@ void P2P::sendPacketClient(sf::Packet p)
 			}	
 		//}
 }
-
-
 void P2P::sendTCPPacketServer(sf::Packet p, Client* pCP)
 {
 	sf::Socket::Status status = pCP->tcpID->send(p);
@@ -225,8 +196,6 @@ void P2P::sendTCPPacketServer(sf::Packet p, Client* pCP)
 	}
 	std::cout << "- SERVER ---> TCP ---> Send Status from SERVER: " << status << std::endl;
 }
-
-
 sf::Packet P2P::recieveTCPPacket(sf::TcpSocket &tcpS)
 {
 	sf::Packet packet;
@@ -242,7 +211,33 @@ sf::Packet P2P::recieveTCPPacket(sf::TcpSocket &tcpS)
 	return packet;
 }
 
-// --- SEND UDP PACKET ---
+// --- UDP Setup ---
+void P2P::udpBindServer() // setting server side to bind to port 53000
+{
+	if (!getIsHost())
+	{
+		if (udpSocketServer.bind(53000) != sf::Socket::Done)
+		{
+			std::cout << "Error - SERVER ---> UDP ---> Failed to bind Server to UPD port" << std::endl;
+		}
+		udpSocketServer.setBlocking(false);
+		socketSelector.add(udpSocketServer);
+	}
+}
+void P2P::udpBindClient() // binding UDP socket on the client side to any port available which will be chosen at random and unpredictable to determine which port it will be
+{
+	if (udpSocketClient.bind(sf::Socket::AnyPort) != sf::Socket::Done)
+	{
+		std::cout << "Error -- CLIENT ---> UDP ---> Failed to bind server to UPD port on client side" << std::endl;
+	}
+	udpSocketClient.setBlocking(false);
+	socketSelector.add(udpSocketClient);
+	sf::Packet uDPPacket;
+	uDPPacket << "PlayerJoined" << udpSocketClient.getLocalPort();
+	sendPacketClient(uDPPacket);
+}
+
+// --- UDP Sending/Recieving ---
 void P2P::sendUDPPacketClient(sf::Packet p)
 {
 	// --- Packet CLIENT side UDP: SENDING ---	
@@ -253,7 +248,6 @@ void P2P::sendUDPPacketClient(sf::Packet p)
 	}
 	std::cout << "-- CLIENT ---> SENDING UDP ---> Status: " << status << std::endl;
 }
-
 void P2P::sendUDPPacketServer(sf::Packet p, Client* c)
 {
 	// --- Packet CLIENT side UDP: SENDING ---	
@@ -265,10 +259,6 @@ void P2P::sendUDPPacketServer(sf::Packet p, Client* c)
 	std::cout << "-- SERVER ---> UDP ---> Status: " << status << std::endl;
 }
 
-
-// --- RECIEVE UDP PACKET ---
-
-// recieve UDP Packet from SERVER
 sf::Packet P2P::recieveUDPPacketClient()
 {
 	sf::IpAddress clientAddress;
@@ -284,8 +274,6 @@ sf::Packet P2P::recieveUDPPacketClient()
 	}
 	return recieveUDPPacket;
 }
-
-// recieve UDP Packet from CLIENT
 sf::Packet P2P::recieveUDPPacketServer()
 {
 	sf::IpAddress serverAddress;
@@ -302,6 +290,7 @@ sf::Packet P2P::recieveUDPPacketServer()
 	return recieveUDPPacket;
 }
 
+// Getters
 bool P2P::getIsHost()
 {
 	return isHost;

@@ -45,6 +45,7 @@ void LevelManager::Update(float dt)
 		}
 
 	}
+
 	//if (tank[0] && !playerOne)
 	//{
 	//	tank[0]->setPosition(40, windowHeight / 2);
