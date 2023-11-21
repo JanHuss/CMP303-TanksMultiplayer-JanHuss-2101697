@@ -49,7 +49,8 @@ public:
 	// --- TCP Sending/Recieving ---
 	void sendPacketClient(sf::Packet p); // Send package data from CLIENT
 	void sendTCPPacketServer(sf::Packet p, Client* pCP); // Send package data from SERVER
-	sf::Packet recieveTCPPacket(sf::TcpSocket& tcpS); // Recieve package data
+	sf::Packet recieveTCPPacketClient(sf::TcpSocket& tcpS); // Recieve package data from SERVER
+	sf::Packet recieveTCPPacketServer(sf::TcpSocket& tcpS); // Recieve package data from CLIENT
 
 	// --- UDP Setup ---
 	void udpBindServer(); // Bind SERVER to UDP socket
