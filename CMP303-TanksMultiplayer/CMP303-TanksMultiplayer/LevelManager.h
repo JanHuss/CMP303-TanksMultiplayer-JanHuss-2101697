@@ -10,6 +10,7 @@
 #include "Floor.h"
 #include "Font.h"
 #include "P2P.h"
+#include "Framework/Input.h"
 
 class LevelManager
 {
@@ -30,17 +31,18 @@ private:
 	std::string playerScoreDisplay;
 
 public:
-	LevelManager(int windowW, int windowH);
+	LevelManager(Input* in, int windowW, int windowH);
 	~LevelManager();
 
 	void Update(float dt);
 	std::string pStoString(int value);
 	void Render(sf::RenderWindow* window);
-
 	// pointers
-	std::vector<Tank*> tank; // create a tank object which will be assigned to a player
+	Input* input;
+	std::vector<Tank*> tanks; // create a tank object which will be assigned to a player
 	Floor* floor; //Initialise the background texture and sprite
 	//std::vector <Font*> playerScore; // Initialise font
 	P2P* p2p; //Initialise Peer to Peer Network
+
 };
 

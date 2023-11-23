@@ -1,8 +1,9 @@
 #include "LevelManager.h"
 
-LevelManager::LevelManager(int windowW, int windowH)
+LevelManager::LevelManager(Input* in, int windowW, int windowH)
 {
 	// initialisation
+	input = in;
 	windowWidth = windowW;
 	windowHeight = windowH;
 	playerTextX = windowW / 2;
@@ -13,8 +14,13 @@ LevelManager::LevelManager(int windowW, int windowH)
 	floor = new Floor;
 	floor->floorInit();
 
+	// initialising players tank
+	tanks.push_back(new Tank("green", playerOneRotation, input));
+	tanks[0]->setPosition(40, windowHeight / 2);
+
 	// Networking Peer to Peer
-	p2p = new P2P(&tank);
+	p2p = new P2P(tanks, input);
+	
 
 	p2p->tcpListeningCheck();
 	p2p->tcpStatusCheck();
@@ -22,9 +28,6 @@ LevelManager::LevelManager(int windowW, int windowH)
 	p2p->udpBindServer();
 	p2p->udpBindClient();
 
-	// initialising players tank
-	//tank.push_back(new Tank("green", playerOneRotation));
-	//tank[0]->setPosition(40, windowHeight / 2);
 }
 
 LevelManager::~LevelManager()
@@ -33,18 +36,11 @@ LevelManager::~LevelManager()
 
 void LevelManager::Update(float dt)
 {
-	p2p->peerToPeerArchitecture(); // checking if host already exists. If not, the application is the host. if it is, the application will be a client
+	p2p->HostClientArchitecture(); // checking if host already exists. If not, the application is the host. if it is, the application will be a client
 	
 	// Class update functions
-	if (tank.size() != 0) 
-	{
-		for (auto& t : tank)
-		{
-			t->Update(dt);
-			t->handleInput(dt);
-		}
-
-	}
+	
+	tanks[0]->Update(dt);
 
 	//if (tank[0] && !playerOne)
 	//{
@@ -83,9 +79,9 @@ std::string LevelManager::pStoString(int value)
 void LevelManager::Render(sf::RenderWindow* window)
 {
 	floor->Render(window);
-	if (tank.size() != 0)
+	if (tanks.size() != 0)
 	{
-		for (auto& t : tank) 
+		for (auto& t : tanks) 
 		{
 			t->Render(window);
 		}

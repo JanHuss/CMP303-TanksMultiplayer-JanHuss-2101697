@@ -1,13 +1,17 @@
 #pragma once
 #include "SFML/Network.hpp"
+#include "sfml/Graphics.hpp"
 #include "Tank.h"
+#include "Framework/Input.h"
 
 struct Client // Struct that holds all client data. All information that needs to be sent and recieved in one location
 {
-	Client(sf::TcpSocket* tcpID)
+	Client(sf::TcpSocket* tcpID, int pID)
 	{
 		this->tcpID = tcpID;
+		this->playerID = pID;
 	}
+	int playerID;		// Variable to assign the player ID	
 	int port;
 	sf::TcpSocket* tcpID;	// Pointer for the tcp client socket. this is used to assign a tcpSocket element when pushing back a new tcpclient element in the client vector.
 							// this functions as an ID to be passed on and determines who is which player
@@ -25,18 +29,19 @@ private:
 	sf::UdpSocket udpSocketServer; // UDP socket for SERVER
 	sf::UdpSocket udpSocketClient; // UDP socket for CLIENT
 
-	bool isHost = true; // Bool to determine the host. If a host already exists then set to false and stop programme from listening for clients
+	bool isHost; // Bool to determine the host. If a host already exists then set to false and stop programme from listening for clients
 	std::string hasJoined;
 
-	std::vector<Tank*>* tank; // Vector pointer of tank pointers
-	std::vector<Client*> client; // Vector of client pointers that will be pushed back once a client joins at which point the client vector element is assigned to the client struct ID
+	std::vector<Tank*>& tanks; // Vector pointer of tank pointers
+	Input* input;
 
 public:
-	P2P(std::vector<Tank*>* t);
+	P2P(std::vector<Tank*>& t, Input* in);
 	~P2P();
 
+	std::vector<Client*> client; // Vector of client pointers that will be pushed back once a client joins at which point the client vector element is assigned to the client struct ID
 	// --- Peer to Peer Architecture ---
-	void peerToPeerArchitecture();	// Structure that runs the peer to peer networking system.
+	void HostClientArchitecture();	// Structure that runs the HOST/CLIENT networking system.
 									// First the network will check if the there is a HOST/SERVER available.
 									// If there isn't the application will take the HOST/SERVER role and initially 
 	void serverSetup();				// connect with itself as a CLIENT.
@@ -62,6 +67,9 @@ public:
 	sf::Packet recieveUDPPacketClient(); // Recieve UDP packet information from SERVER
 	sf::Packet recieveUDPPacketServer(); // Recieve UDP packet information from CLIENT
 	
+	// --- Setters ---
+	void setIsHost(bool iH);
+
 	// --- Getters ---
 	bool getIsHost();
 };

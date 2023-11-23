@@ -1,14 +1,16 @@
 #pragma once
 #include <SFML\Graphics.hpp>
+#include <SFML\Network.hpp>
 #include <vector>
 #include "TankMessage.h"
+
 #include "Framework/Input.h"
 #include <iostream>
 
 class Tank : public sf::Sprite
 {
 public:
-	Tank(std::string color, int setR);
+	Tank(std::string color, int setR, Input* in);
 	~Tank();
 
 	enum RenderMode {
@@ -25,9 +27,11 @@ public:
 	sf::Vector2f RunPrediction(float gameTime);
 
 	void SetRenderMode(const RenderMode renderMode) { m_RenderMode = renderMode; }
-	void setPosition( float x, float y );
+	//void setPosition( float x, float y );
 	void setGhostPosition( sf::Vector2f pos );
 	void Reset();
+
+	sf::Packet movementPacket;
 
 private:
 	sf::Sprite	m_BarrelSprite;
@@ -40,7 +44,7 @@ private:
 
 	RenderMode	m_RenderMode = RenderMode::REAL_AND_PREDICTED;
 
-	Input input;
+	Input* input;
 
 	std::vector<TankMessage> m_Messages;
 

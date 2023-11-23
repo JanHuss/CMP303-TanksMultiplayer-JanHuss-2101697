@@ -1,10 +1,10 @@
 #include "Tank.h"
 
-
-Tank::Tank(std::string color, int setR)
+Tank::Tank(std::string color, int setR, Input* in)
 {
 	// initialisation
 	setRotate = setR;
+	input = in;
 
 	// rotation variables
 	goNorth = 180;
@@ -82,12 +82,15 @@ void Tank::handleInput(float dt)
 	{
 		std::cout << "Fire Canon!!!" << std::endl;
 	}
+	
+	std::string playerMovement = "PlayerMovement";
+	movementPacket << playerMovement << getPosition().x << getPosition().y;
 }
 
-void Tank::setPosition( float x, float y ) {
-	sf::Sprite::setPosition(x, y);
-	m_BarrelSprite.setPosition(getPosition());
-}
+//void Tank::setPosition( float x, float y ) {
+//	sf::Sprite::setPosition(x, y);
+//	m_BarrelSprite.setPosition(getPosition());
+//}
 
 //Use this to set the prediction position
 void Tank::setGhostPosition( sf::Vector2f pos ) {
