@@ -39,6 +39,7 @@ int main() {
 			if (event.type == sf::Event::KeyPressed) 
 			{
 				level.tanks[0]->handleInput(dt);
+				//level.p2p->sendTCPPacketServer(level.tanks[0]->movementPacket, level.p2p->client[0]);
 				if (event.key.code == sf::Keyboard::Key::Escape)
 				{
 					// when the while loop ends send over the packet information to a client to let them know they are now the host
@@ -50,12 +51,6 @@ int main() {
 			
 				if (event.key.code == sf::Keyboard::Key::R) 
 				{
-					//for (auto t : tank) // resetting tanks position in for loop
-					//{
-					//	t.Reset();
-					//}
-
-					//netSimulator.Reset();
 					nextPrint = startTime;
 					std::cout << "\n\n--------RESET--------\n\n" << std::endl;
 				}

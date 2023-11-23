@@ -35,8 +35,11 @@ private:
 	std::vector<Tank*>& tanks; // Vector pointer of tank pointers
 	Input* input;
 
+	int windowWidth;
+	int windowHeight;
+
 public:
-	P2P(std::vector<Tank*>& t, Input* in);
+	P2P(std::vector<Tank*>& t, Input* in, int winW, int winH);
 	~P2P();
 
 	std::vector<Client*> client; // Vector of client pointers that will be pushed back once a client joins at which point the client vector element is assigned to the client struct ID

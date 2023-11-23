@@ -19,7 +19,7 @@ LevelManager::LevelManager(Input* in, int windowW, int windowH)
 	tanks[0]->setPosition(40, windowHeight / 2);
 
 	// Networking Peer to Peer
-	p2p = new P2P(tanks, input);
+	p2p = new P2P(tanks, input, windowWidth, windowHeight);
 	
 
 	p2p->tcpListeningCheck();

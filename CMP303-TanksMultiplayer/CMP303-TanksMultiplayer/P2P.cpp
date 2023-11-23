@@ -1,6 +1,6 @@
 #include "P2P.h"
 
-P2P::P2P(std::vector<Tank*>& t, Input* in) : tanks(t), input(in)
+P2P::P2P(std::vector<Tank*>& t, Input* in, int winwW, int winH) : tanks(t), input(in), windowWidth(winwW), windowHeight(winH)
 {
 	hasJoined = "A client has joined";
 	setIsHost(true);
@@ -151,7 +151,8 @@ void P2P::serverSetup()
 				{
 
 					unsigned short port; // create an unsigned short variable for the received UDP packet to pass data to
-					packet >> port >> tankX >> tankY; // pass data from received packet to the unsigned short variable
+					
+					uDPPacket >> port >> tankX >> tankY; // pass data from received packet to the unsigned short variable
 
 					for (auto& cTwo : client)
 					{
@@ -159,8 +160,8 @@ void P2P::serverSetup()
 						{
 							sf::Packet playerData;
 							playerData << "PlayerMovement" << c->playerPos.x << c->playerPos.y;
-
-							sendTCPPacketServer(playerData, cTwo);
+							
+							sendUDPPacketServer(playerData, cTwo);
 						}
 					}
 				}
@@ -205,9 +206,6 @@ void P2P::clientSetup()
 
 			udpBindServer();
 			udpBindClient();
-
-
-
 		}
 		if (clientReceivesTCPPacket._Equal("playerjoinedServer"))
 		{
@@ -228,7 +226,6 @@ void P2P::clientSetup()
 	}
 	if (socketSelector.isReady(udpSocketClient)) // This function must be used after a call to Wait, to know if UDP sockets are ready to receive data.
 	{
-
 		// --- PackeT CLIENT side UDP: RECIEVING ---			
 		std::string clientData; // string to move the CLIENT information received via UDP 
 		recieveUDPPacketClient() >> clientData;; // move the received UDP packet information onto the string
@@ -274,7 +271,6 @@ void P2P::sendPacketClient(sf::Packet p)
 	{
 		std::cout << "!!! Error --- PACKET ---> TCP ---> Cannot send data !!!" << std::endl; // output error if the status is not 0
 	}
-	std::cout << "-- CLIENT--->PACKET--->TCP--->DATA SENT TO SERVER" << std::endl; // output that data has been sent
 }
 void P2P::sendTCPPacketServer(sf::Packet p, Client* pCP)	// Send a packet from the SERVER to the CLIENT with the dedicated ID which is being passed through as a pCP argument
 {
@@ -340,7 +336,7 @@ void P2P::udpBindClient() // binding UDP socket on the client side to any port a
 	sf::Packet uDPPacket;
 	if (!getIsHost())
 	{
-		tanks[0]->setPosition(80, 80);
+		tanks[0]->setPosition(windowWidth - 80, windowHeight / 2);
 	}
 	int tankX = tanks[0]->getPosition().x;
 	int tankY = tanks[0]->getPosition().y;
@@ -352,7 +348,7 @@ void P2P::udpBindClient() // binding UDP socket on the client side to any port a
 void P2P::sendUDPPacketClient(sf::Packet p) // Send information from CLIENT to SERVER by passing through a packet in as an argument
 {
 	// --- Packet CLIENT side UDP: SENDING ---	
-	sf::Socket::Status status = udpSocketClient.send(p, "localhost", 53000); // Send UDP Packet information 
+	sf::Socket::Status status = udpSocketClient.send(p, "localhost", 53000); // check status of CLIENT socket
 	if (status != sf::Socket::Done)
 	{
 		std::cout << "!!! Error -- CLIENT ---> UDP ---> Status: " << status << " !!!" << std::endl;

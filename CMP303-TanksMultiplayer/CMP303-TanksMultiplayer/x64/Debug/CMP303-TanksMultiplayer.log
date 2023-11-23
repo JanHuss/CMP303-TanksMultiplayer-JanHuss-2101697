@@ -1,23 +1,29 @@
 ﻿  P2P.cpp
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(49,35): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(111,23): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+D:\De Daduck (Jan)\Studies\Year 3\CMP303-Networking\Coursework\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(49,16): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\De Daduck (Jan)\Studies\Year 3\CMP303-Networking\Coursework\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(111,23): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(112,23): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+D:\De Daduck (Jan)\Studies\Year 3\CMP303-Networking\Coursework\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(112,23): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(345,12): warning C4244: 'initializing': conversion from 'const T' to 'int', possible loss of data
+D:\De Daduck (Jan)\Studies\Year 3\CMP303-Networking\Coursework\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(339,56): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\De Daduck (Jan)\Studies\Year 3\CMP303-Networking\Coursework\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(339,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\De Daduck (Jan)\Studies\Year 3\CMP303-Networking\Coursework\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(340,56): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\De Daduck (Jan)\Studies\Year 3\CMP303-Networking\Coursework\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(340,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\De Daduck (Jan)\Studies\Year 3\CMP303-Networking\Coursework\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(341,56): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\De Daduck (Jan)\Studies\Year 3\CMP303-Networking\Coursework\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(341,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\De Daduck (Jan)\Studies\Year 3\CMP303-Networking\Coursework\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(343,12): warning C4244: 'initializing': conversion from 'const T' to 'int', possible loss of data
           with
           [
               T=float
           ]
-D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(346,12): warning C4244: 'initializing': conversion from 'const T' to 'int', possible loss of data
+D:\De Daduck (Jan)\Studies\Year 3\CMP303-Networking\Coursework\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(344,12): warning C4244: 'initializing': conversion from 'const T' to 'int', possible loss of data
           with
           [
               T=float
           ]
-  CMP303-TanksMultiplayer.vcxproj -> D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\x64\Debug\CMP303-TanksMultiplayer.exe
+  CMP303-TanksMultiplayer.vcxproj -> D:\De Daduck (Jan)\Studies\Year 3\CMP303-Networking\Coursework\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\x64\Debug\CMP303-TanksMultiplayer.exe
