@@ -7,6 +7,8 @@
 #include "Framework/Input.h"
 #include <iostream>
 
+class P2P;
+
 class Tank : public sf::Sprite
 {
 public:
@@ -20,7 +22,7 @@ public:
 	};
 
 	void Update(float dt);
-	void handleInput(float dt);
+	void handleInput(float dt, P2P& p2p);
 	const void Render(sf::RenderWindow* window);
 
 	void AddMessage(const TankMessage& msg);
@@ -31,7 +33,6 @@ public:
 	void setGhostPosition( sf::Vector2f pos );
 	void Reset();
 
-	sf::Packet movementPacket;
 
 private:
 	sf::Sprite	m_BarrelSprite;
@@ -42,6 +43,7 @@ private:
 	float		m_BodyRotation;
 	float		m_BarrelRotation;
 
+	
 	RenderMode	m_RenderMode = RenderMode::REAL_AND_PREDICTED;
 
 	Input* input;

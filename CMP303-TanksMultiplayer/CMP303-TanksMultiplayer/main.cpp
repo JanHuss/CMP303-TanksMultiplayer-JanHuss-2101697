@@ -2,6 +2,9 @@
 #include <iomanip>
 #include "LevelManager.h"
 #include "Framework/Input.h"
+#include "Tank.h"
+#include "P2P.h"
+#include <vector>
 
 int main() {
 	//variables
@@ -13,6 +16,9 @@ int main() {
 
 	Input* input;
 	input = new Input;
+	std::vector<Tank*> tanks;
+	P2P* p2p = new P2P(tanks, input, windowWidth, windowHeight);
+	
 	LevelManager level(input, windowWidth, windowHeight);
 
 	// setting render mode
@@ -38,8 +44,8 @@ int main() {
 				window.close();
 			if (event.type == sf::Event::KeyPressed) 
 			{
-				level.tanks[0]->handleInput(dt);
-				//level.p2p->sendTCPPacketServer(level.tanks[0]->movementPacket, level.p2p->client[0]);
+				level.tanks[0]->handleInput(dt, *p2p);
+				
 				if (event.key.code == sf::Keyboard::Key::Escape)
 				{
 					// when the while loop ends send over the packet information to a client to let them know they are now the host

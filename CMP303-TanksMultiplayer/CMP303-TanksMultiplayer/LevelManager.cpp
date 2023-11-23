@@ -41,7 +41,7 @@ void LevelManager::Update(float dt)
 	// Class update functions
 	
 	tanks[0]->Update(dt);
-
+	//tanks[0]->handleInput(dt, *p2p);
 	//if (tank[0] && !playerOne)
 	//{
 	//	tank[0]->setPosition(40, windowHeight / 2);
