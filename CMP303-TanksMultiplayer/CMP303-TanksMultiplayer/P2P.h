@@ -12,7 +12,7 @@ struct Client // Struct that holds all client data. All information that needs t
 		this->playerID = pID;
 	}
 	int playerID;		// Variable to assign the player ID	
-	int port;
+	unsigned short port;
 	sf::TcpSocket* tcpID;	// Pointer for the tcp client socket. this is used to assign a tcpSocket element when pushing back a new tcpclient element in the client vector.
 							// this functions as an ID to be passed on and determines who is which player
 	sf::Vector2f playerPos; // To store tanks coordinates

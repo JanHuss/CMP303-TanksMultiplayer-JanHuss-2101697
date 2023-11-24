@@ -99,7 +99,7 @@ void P2P::serverSetup()
 				// Initially Binding SERVER UDP
 				std::string clientEntersRoom; // Create a string for the receiving packet to unload on
 				packet >> clientEntersRoom; // Pass packet information to string
-				std::cout << clientEntersRoom << std::endl; // Output received data which should be PlayerJoined
+				std::cout << "Client enters room TCP" << clientEntersRoom << std::endl; // Output received data which should be PlayerJoined
 
 				if (clientEntersRoom._Equal("PlayerJoined")) // Check if the string is equal to the string of the socket that binds the UDP SERVER function
 				{
@@ -141,18 +141,17 @@ void P2P::serverSetup()
 				sf::Packet uDPPacket; // UDP Packet
 				float tankX;
 				float tankY;
-				uDPPacket >> clientData;
 				//uDPPacket = recieveUDPPacketServer(); // assign the SERVER receiving function to the UDP Packet
 				//uDPPacket >> clientData >> tankX >> tankY; // unpack the UDP Packet data into the clientdata string
 				//c->playerPos.x = tankX;
 				//c->playerPos.y = tankY;
-				
-				if (clientEntersRoom._Equal("PlayerMovement"))
-				{
 
-					unsigned short port; // create an unsigned short variable for the received UDP packet to pass data to
-					
-					uDPPacket >> port >> tankX >> tankY; // pass data from received packet to the unsigned short variable
+				uDPPacket = recieveUDPPacketServer();
+				uDPPacket >> clientData;
+
+				if (clientData._Equal("PlayerMovement"))
+ 				{					
+					uDPPacket >> tankX >> tankY; // pass data from received packet to the unsigned short variable
 
 					for (auto& cTwo : client)
 					{
@@ -165,9 +164,8 @@ void P2P::serverSetup()
 						}
 					}
 				}
-
-				// not receiving the output here
-				std::cout << "\nClient data: " << clientData << std::endl; // Output the client data
+			
+				std::cout << "\nSERVER UDP - Client data: " << clientData << std::endl; // Output the client data
 			}
 		}
 	}
@@ -196,7 +194,7 @@ void P2P::clientSetup()
 		std::string clientReceivesTCPPacket; // string to unload the TCP packet information on to
 
 		receiveTCPPacket >> clientReceivesTCPPacket; // pass data from TCP packet received to the string
-		std::cout << clientReceivesTCPPacket << std::endl; // output data received from the SERVER
+		std::cout << "Client receives TCP packet" << clientReceivesTCPPacket << std::endl; // output data received from the SERVER
 		
 		if (clientReceivesTCPPacket._Equal("-HostHasLeft-"))
 		{
@@ -215,9 +213,9 @@ void P2P::clientSetup()
 			float tankX;
 			float tankY;
 			receiveTCPPacket >> tankX >> tankY;
-		Tank* tank = new Tank("blue", 90, input);
-		tank->setPosition(tankX, tankY);
-		tanks.push_back(tank);
+			Tank* tank = new Tank("blue", 90, input);
+			tank->setPosition(tankX, tankY);
+			tanks.push_back(tank);
 		//tank->push_back(new Tank("green", 270, input));
 		//}
 
@@ -226,15 +224,23 @@ void P2P::clientSetup()
 	}
 	if (socketSelector.isReady(udpSocketClient)) // This function must be used after a call to Wait, to know if UDP sockets are ready to receive data.
 	{
-		// --- PackeT CLIENT side UDP: RECIEVING ---			
+		// --- PackeT CLIENT side UDP: RECIEVING ---	
+		sf::Packet udpPacket;
 		std::string clientData; // string to move the CLIENT information received via UDP 
-		recieveUDPPacketClient() >> clientData;; // move the received UDP packet information onto the string
-		std::cout << clientData << std::endl; // output the received data
-
-		// --- Packet CLIENT SIDE UDP: INIT SEND ---
-		sf::Packet udpPacket; // Packet for sending UDP information from the CLIENT to the SERVER
-		udpPacket << "--- CLIENT TO SERVER ---> PACKET ---> UDP ---> Hello SERVER! I'm a CLIENT sending a message over UDP\n"; // Test string to see if the SERVER receives UDP packets
-		sendUDPPacketClient(udpPacket); // send the UDP packet
+		udpPacket = recieveUDPPacketClient(); // move the received UDP packet information onto the string
+		udpPacket >> clientData;
+		if (!clientData.empty())
+		{
+			return;
+		}
+		if (clientData._Equal("PlayerMovement"))
+		{
+			float tankX;
+			float tankY;
+			udpPacket >> tankX >> tankY;
+			tanks[1]->setPosition(tankX, tankY);
+		}
+		std::cout << "Client reives UDP packet" << clientData << std::endl; // output the received data
 	}
 	//}
 }
@@ -315,7 +321,7 @@ sf::Packet P2P::recieveTCPPacketServer(sf::TcpSocket& tcpS)
 // --- UDP Setup ---
 void P2P::udpBindServer() // setting server side to bind to port 53000
 {
-	if (!getIsHost())
+	if (getIsHost())
 	{
 		if (udpSocketServer.bind(53000) != sf::Socket::Done)
 		{
@@ -333,6 +339,9 @@ void P2P::udpBindClient() // binding UDP socket on the client side to any port a
 	}
 	udpSocketClient.setBlocking(false);
 	socketSelector.add(udpSocketClient);
+
+	std::cout << "CLIENT UDP port: " << udpSocketClient.getLocalPort() << std::endl;
+
 	sf::Packet uDPPacket;
 	if (!getIsHost())
 	{
@@ -353,7 +362,7 @@ void P2P::sendUDPPacketClient(sf::Packet p) // Send information from CLIENT to S
 	{
 		std::cout << "!!! Error -- CLIENT ---> UDP ---> Status: " << status << " !!!" << std::endl;
 	}
-	std::cout << "-- CLIENT ---> SENDING UDP ---> Status: " << status << std::endl;
+	//std::cout << "-- CLIENT ---> SENDING UDP ---> Status: " << status << std::endl;
 }
 void P2P::sendUDPPacketServer(sf::Packet p, Client* c) // Send information from SERVER to CLIENT by passing through a packet and the current client struct in as an argument
 {
@@ -361,7 +370,7 @@ void P2P::sendUDPPacketServer(sf::Packet p, Client* c) // Send information from 
 	sf::Socket::Status status = udpSocketServer.send(p, "localhost", c->port); // Create a new socket status variable and assign a UDP socket sending function to it bassing through the packet, the local host as the address and the port number of the current CLIENT
 	if (status != sf::Socket::Done) // Check if the SERVER UDP socket status is not 0
 	{
-		std::cout << "!!! Error -- CLIENT CAN'T RECIEVE DATA ---> UDP ---> Status: " << status << " !!!" << std::endl; // If the check is anything but 0 then print an Error to the console
+		std::cout << "!!! Error -- SERVER CAN'T RECIEVE DATA ---> UDP ---> Status: " << status << " !!!" << std::endl; // If the check is anything but 0 then print an Error to the console
 	}
 	std::cout << "-- SERVER ---> UDP ---> Status: " << status << std::endl; // Output the Status which should be 0 to confirm that the SERVER has sent data
 }
@@ -370,14 +379,14 @@ sf::Packet P2P::recieveUDPPacketClient() // Reiceive information from the SERVER
 	sf::IpAddress clientAddress; // Temp variable for the IP address the SERVER holds
 	unsigned short clientPort; // Port number of the SERVER
 	sf::Packet recieveUDPPacket; // Packet that will receive the CLIENT'S data
-	if (socketSelector.isReady(udpSocketClient)) // This function must be used after a call to wait, to know if the CLIENT socket is ready to receive data
-	{
+	//if (socketSelector.isReady(udpSocketClient)) // This function must be used after a call to wait, to know if the CLIENT socket is ready to receive data
+	//{
 		sf::Socket::Status status = udpSocketClient.receive(recieveUDPPacket, clientAddress, clientPort); // create a new status and assign the UDP CLIENT socket to it
 		if (status != sf::Socket::Done) // check if the UDP socket CLIENT didn't receive any or all of the data
 		{
 			std::cout << "!!! Error -- CLIENT CAN'T RECIEVE DATA ---> UDP ---> Status: " << status << " !!!" << std::endl; // if the socket didn't receive or partially received the data, output error
 		}
-	}
+	//}
 	return recieveUDPPacket; // return whatever was received 
 }
 sf::Packet P2P::recieveUDPPacketServer() // Reiceive information from the CLIENT to the SERVER via UDP
@@ -385,12 +394,15 @@ sf::Packet P2P::recieveUDPPacketServer() // Reiceive information from the CLIENT
 	sf::IpAddress serverAddress; // Temp variable for the IP address the CLIENT holds
 	unsigned short serverPort; // Port number of the CLIENT
 	sf::Packet recieveUDPPacket; // Packet that will receive the CLIENT'S data
-	if (socketSelector.isReady(udpSocketServer)) // This function must be used after a call to wait, to know if the SERVER socket is ready to receive data
+	if (socketSelector.wait(sf::milliseconds(1)))
 	{
-		sf::Socket::Status status = udpSocketServer.receive(recieveUDPPacket, serverAddress, serverPort); // create a new status and assign the UDP SERVER socket to it
-		if (status != sf::Socket::Done) // check if the UDP socket SERVER didn't receive any or all of the data
+		if (socketSelector.isReady(udpSocketServer)) // This function must be used after a call to wait, to know if the SERVER socket is ready to receive data
 		{
-			std::cout << "Error -- SERVER CAN'T RECIEVE DATA ---> UDP ---> Status: " << status << std::endl; // if the socket didn't receive or partially received the data, output error
+			sf::Socket::Status status = udpSocketServer.receive(recieveUDPPacket, serverAddress, serverPort); // create a new status and assign the UDP SERVER socket to it
+			if (status != sf::Socket::Done) // check if the UDP socket SERVER didn't receive any or all of the data
+			{
+				std::cout << "Error -- SERVER CAN'T RECIEVE DATA ---> UDP ---> Status: " << status << std::endl; // if the socket didn't receive or partially received the data, output error
+			}
 		}
 	}
 	return recieveUDPPacket; // return whatever was received 

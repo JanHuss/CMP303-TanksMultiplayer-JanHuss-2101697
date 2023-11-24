@@ -1,4 +1,5 @@
 #include "Tank.h"
+#include "P2P.h"
 
 Tank::Tank(std::string color, int setR, Input* in)
 {
@@ -48,7 +49,7 @@ void Tank::Update(float dt)
 	setPosition( latestMessage.x, latestMessage.y );
 }
 
-void Tank::handleInput(float dt)
+void Tank::handleInput(float dt, P2P& p2p)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) // move left
 	{
@@ -83,8 +84,10 @@ void Tank::handleInput(float dt)
 		std::cout << "Fire Canon!!!" << std::endl;
 	}
 	
+	sf::Packet movementPacket;
 	std::string playerMovement = "PlayerMovement";
 	movementPacket << playerMovement << getPosition().x << getPosition().y;
+	p2p.sendUDPPacketClient(movementPacket);
 }
 
 //void Tank::setPosition( float x, float y ) {

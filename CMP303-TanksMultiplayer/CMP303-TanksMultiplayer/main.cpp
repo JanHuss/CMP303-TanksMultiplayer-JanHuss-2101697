@@ -38,7 +38,7 @@ int main() {
 				window.close();
 			if (event.type == sf::Event::KeyPressed) 
 			{
-				level.tanks[0]->handleInput(dt);
+				level.tanks[0]->handleInput(dt, *level.p2p);
 				//level.p2p->sendTCPPacketServer(level.tanks[0]->movementPacket, level.p2p->client[0]);
 				if (event.key.code == sf::Keyboard::Key::Escape)
 				{
