@@ -229,7 +229,7 @@ void P2P::clientSetup()
 		std::string clientData; // string to move the CLIENT information received via UDP 
 		udpPacket = recieveUDPPacketClient(); // move the received UDP packet information onto the string
 		udpPacket >> clientData;
-		if (!clientData.empty())
+		if (clientData.empty())
 		{
 			return;
 		}
@@ -240,7 +240,7 @@ void P2P::clientSetup()
 			udpPacket >> tankX >> tankY;
 			tanks[1]->setPosition(tankX, tankY);
 		}
-		std::cout << "Client reives UDP packet" << clientData << std::endl; // output the received data
+		std::cout << "Client reives UDP packet: " << clientData << std::endl; // output the received data
 	}
 	//}
 }
