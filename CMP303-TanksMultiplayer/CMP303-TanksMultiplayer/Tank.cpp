@@ -51,6 +51,8 @@ void Tank::Update(float dt)
 
 void Tank::handleInput(float dt, P2P& p2p)
 {
+	sf::Vector2f previous = getPosition();
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) // move left
 	{
 		setPosition(getPosition().x + (-speed * dt), getPosition().y);
@@ -83,10 +85,11 @@ void Tank::handleInput(float dt, P2P& p2p)
 	{
 		std::cout << "Fire Canon!!!" << std::endl;
 	}
+	sf::Vector2f velocity = previous - getPosition();
 	
 	sf::Packet movementPacket;
 	std::string playerMovement = "PlayerMovement";
-	movementPacket << playerMovement << getPosition().x << getPosition().y;
+	movementPacket << playerMovement << getPosition().x << getPosition().y << velocity.x << velocity.y << tankID;
 	p2p.sendUDPPacketClient(movementPacket);
 }
 
@@ -98,6 +101,16 @@ void Tank::handleInput(float dt, P2P& p2p)
 //Use this to set the prediction position
 void Tank::setGhostPosition( sf::Vector2f pos ) {
 	m_GhostSprite.setPosition( pos );
+}
+
+void Tank::setTankID(int tID)
+{
+	tankID = tID;
+}
+
+int Tank::getTankID()
+{
+	return tankID;
 }
 
 //Add a message to the tank's network message queue

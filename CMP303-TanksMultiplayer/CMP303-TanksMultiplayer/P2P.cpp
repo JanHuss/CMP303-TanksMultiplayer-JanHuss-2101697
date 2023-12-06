@@ -68,8 +68,8 @@ void P2P::serverSetup()
 
 		// --- Packet SERVER side TCP: SENDING ---
 		sf::Packet packet; // Create a packet
-		std::string clientEntersRoom = "--- SERVER TO CLIENT ---> PACKET ---> TCP ---> Hi I'm SERVER welcome new CLIENT"; // Create a test string with a message to put into packet
-		packet << clientEntersRoom; // Pack the test string into the packet
+		std::string clientEntersRoom = "Welcome to SERVER"; // Create a test string with a message to put into packet
+		packet << clientEntersRoom << playerID; // Pack the test string into the packet
 		sendTCPPacketServer(packet, playerClient); // send the packet allong with the playerClient pointer containing the temp TCP socket to the CLIENT
 		
 		for (auto& c : client)
@@ -77,7 +77,7 @@ void P2P::serverSetup()
 			if (playerID != c->playerID)
 			{
 				sf::Packet playerDataTwo;
-				playerDataTwo << "playerjoinedServer" << c->playerPos.x << c->playerPos.y;
+				playerDataTwo << "playerjoinedServer" << c->playerPos.x << c->playerPos.y << c->playerID;
 				sendTCPPacketServer(playerDataTwo, playerClient);
 			}
 		}
@@ -85,10 +85,13 @@ void P2P::serverSetup()
 	else	// if the socket selector is not ready, block and iterate through the client vector and assign the ID to each client
 			// the server will then utilise this to determine which player is which and will relay this over to the other clients
 	{
-		// --- Packet SERVER side TCP: RECIEVING ---
-		sf::Packet packet; // Create a new packet for the server to receive information from a CLIENT
+		
+		
 		for (auto& c : client) // Iterate throught the client struct vector. Every c in client resembles a CLIENT/Player
 		{
+			// --- Packet SERVER side TCP: RECIEVING ---
+			sf::Packet packet; // Create a new packet for the server to receive information from a CLIENT
+
 			if (socketSelector.isReady(*c->tcpID))	// This function must be used after a call to Wait, to know which sockets are ready to receive data. 
 			{										//If a socket is ready, a call to receive will never block because we know that there is data available to read.
 				sf::Socket::Status status = c->tcpID->receive(packet); // Create a new socket status set to give a status on whether the CLIENT packet information has been received
@@ -116,7 +119,7 @@ void P2P::serverSetup()
 						if (c->playerID != cTwo->playerID)
 						{
 							sf::Packet playerData;
-							playerData << "playerjoinedServer" << c->playerPos.x << c->playerPos.y;
+							playerData << "playerjoinedServer" << c->playerPos.x << c->playerPos.y << c->playerID;
 
 							sendTCPPacketServer(playerData, cTwo);
 						}
@@ -133,8 +136,8 @@ void P2P::serverSetup()
 				
 			}
 			// UDP Section -------------------------------------------------------------------------------------------
-			if (socketSelector.isReady(udpSocketServer)) // This function must be used after a call to wait, to know if the SERVER socket is ready to receive data
-			{
+			//if (socketSelector.isReady(udpSocketServer)) // This function must be used after a call to wait, to know if the SERVER socket is ready to receive data
+			//{
 				// --- Packet SERVER side UDP: RECIEVING --- 
 				std::string clientEntersRoom; // string for the test string PlayerJoined being sent
 				std::string clientData; // string that contains the data the CLIENT has sent
@@ -150,23 +153,36 @@ void P2P::serverSetup()
 				uDPPacket >> clientData;
 
 				if (clientData._Equal("PlayerMovement"))
- 				{					
-					uDPPacket >> tankX >> tankY; // pass data from received packet to the unsigned short variable
+ 				{
+					sf::Vector2f velocity;
+					int tankID;
+					uDPPacket >> tankX >> tankY >> velocity.x >> velocity.y >> tankID; // pass data from received packet to the unsigned short variable
+					c->playerPos.x = tankX;
+					c->playerPos.y = tankY;
+
+					//std::cout << "got id; " << tankID << " - " << c->playerID << std::endl;
+
+					//if (c->playerID != tankID)
+					//{
+					//	//std::cout << "player ID: " << c->playerID  << " tank id: " << tankID << std::endl;
+					//	return;
+					//}
 
 					for (auto& cTwo : client)
 					{
 						if (c->playerID != cTwo->playerID)
 						{
 							sf::Packet playerData;
-							playerData << "PlayerMovement" << c->playerPos.x << c->playerPos.y;
+							
+							playerData << "PlayerMovement" << c->playerPos.x << c->playerPos.y << velocity.x << velocity.y << tankID;
 							
 							sendUDPPacketServer(playerData, cTwo);
 						}
 					}
 				}
-			
-				std::cout << "\nSERVER UDP - Client data: " << clientData << std::endl; // Output the client data
-			}
+				
+				//std::cout << "\nSERVER UDP - Client data: " << clientData << std::endl; // Output the client data
+			//}
 		}
 	}
 }
@@ -194,8 +210,14 @@ void P2P::clientSetup()
 		std::string clientReceivesTCPPacket; // string to unload the TCP packet information on to
 
 		receiveTCPPacket >> clientReceivesTCPPacket; // pass data from TCP packet received to the string
-		std::cout << "Client receives TCP packet" << clientReceivesTCPPacket << std::endl; // output data received from the SERVER
-		
+		//std::cout << "Client receives TCP packet" << clientReceivesTCPPacket << std::endl; // output data received from the SERVER
+		if (clientReceivesTCPPacket._Equal("Welcome to SERVER"))
+		{
+			int pID;
+			receiveTCPPacket >> pID;
+			tanks[0]->setTankID(pID);
+			std::cout << "your id is: " << pID << std::endl;
+		}
 		if (clientReceivesTCPPacket._Equal("-HostHasLeft-"))
 		{
 			setIsHost(true);
@@ -210,12 +232,21 @@ void P2P::clientSetup()
 		// add client tank
 		/*if (!isHost)
 		{*/
+			int playerID;
 			float tankX;
 			float tankY;
-			receiveTCPPacket >> tankX >> tankY;
+			sf::Vector2f velocity;
+			receiveTCPPacket >> tankX >> tankY >> playerID;
 			Tank* tank = new Tank("blue", 90, input);
 			tank->setPosition(tankX, tankY);
+			tank->setTankID(playerID);
 			tanks.push_back(tank);
+
+			for (auto& t : tanks) {
+				std::cout << "ID; " << t->getTankID() << std::endl;
+			}
+
+			std::cout << "new player id: " << playerID << std::endl;
 		//tank->push_back(new Tank("green", 270, input));
 		//}
 
@@ -237,10 +268,13 @@ void P2P::clientSetup()
 		{
 			float tankX;
 			float tankY;
-			udpPacket >> tankX >> tankY;
-			tanks[1]->setPosition(tankX, tankY);
+			int tankID;
+			sf::Vector2f velocity;
+			udpPacket >> tankX >> tankY >> velocity.x >> velocity.y >> tankID;
+			Tank* t = getTank(tankID);
+			t->setPosition(tankX, tankY);
 		}
-		std::cout << "Client reives UDP packet: " << clientData << std::endl; // output the received data
+		//std::cout << "Client reives UDP packet: " << clientData << std::endl; // output the received data
 	}
 	//}
 }
@@ -327,7 +361,7 @@ void P2P::udpBindServer() // setting server side to bind to port 53000
 		{
 			std::cout << "!!! Error - SERVER ---> UDP ---> Failed to bind Server to UPD port !!!" << std::endl;
 		}
-		udpSocketServer.setBlocking(false);
+		//udpSocketServer.setBlocking(false);
 		socketSelector.add(udpSocketServer);
 	}
 }
@@ -372,7 +406,7 @@ void P2P::sendUDPPacketServer(sf::Packet p, Client* c) // Send information from 
 	{
 		std::cout << "!!! Error -- SERVER CAN'T RECIEVE DATA ---> UDP ---> Status: " << status << " !!!" << std::endl; // If the check is anything but 0 then print an Error to the console
 	}
-	std::cout << "-- SERVER ---> UDP ---> Status: " << status << std::endl; // Output the Status which should be 0 to confirm that the SERVER has sent data
+	//std::cout << "-- SERVER ---> UDP ---> Status: " << status << std::endl; // Output the Status which should be 0 to confirm that the SERVER has sent data
 }
 sf::Packet P2P::recieveUDPPacketClient() // Reiceive information from the SERVER to the CLIENT via UDP
 {
@@ -394,7 +428,7 @@ sf::Packet P2P::recieveUDPPacketServer() // Reiceive information from the CLIENT
 	sf::IpAddress serverAddress; // Temp variable for the IP address the CLIENT holds
 	unsigned short serverPort; // Port number of the CLIENT
 	sf::Packet recieveUDPPacket; // Packet that will receive the CLIENT'S data
-	if (socketSelector.wait(sf::milliseconds(1)))
+	if (socketSelector.wait(sf::milliseconds(50)))
 	{
 		if (socketSelector.isReady(udpSocketServer)) // This function must be used after a call to wait, to know if the SERVER socket is ready to receive data
 		{
@@ -417,4 +451,17 @@ void P2P::setIsHost(bool iH)
 bool P2P::getIsHost()
 {
 	return isHost;
+}
+
+Tank* P2P::getTank(int iD)
+{
+	for (auto& t : tanks)
+	{
+		if (t->getTankID() == iD)
+		{
+			return t;
+		}
+	}
+
+	return nullptr;
 }

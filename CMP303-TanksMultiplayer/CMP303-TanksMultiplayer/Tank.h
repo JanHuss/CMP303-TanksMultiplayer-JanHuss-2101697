@@ -31,6 +31,8 @@ public:
 	void SetRenderMode(const RenderMode renderMode) { m_RenderMode = renderMode; }
 	//void setPosition( float x, float y );
 	void setGhostPosition( sf::Vector2f pos );
+	void setTankID(int tID);
+	int getTankID();
 	void Reset();
 
 private:
@@ -47,6 +49,7 @@ private:
 	Input* input;
 
 	std::vector<TankMessage> m_Messages;
+	int tankID;
 
 	float speed;
 	int setRotate;
