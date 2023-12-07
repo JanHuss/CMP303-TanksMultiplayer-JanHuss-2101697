@@ -4,6 +4,10 @@ P2P::P2P(std::vector<Tank*>& t, Input* in, int winwW, int winH) : tanks(t), inpu
 {
 	hasJoined = "A client has joined";
 	setIsHost(true);
+	isPlayerTwo = true;
+	isPlayerThree = false;
+	isPlayerFour = false;
+	maxPlayers = 4;
 }
 P2P::~P2P()
 {
@@ -210,7 +214,7 @@ void P2P::clientSetup()
 		std::string clientReceivesTCPPacket; // string to unload the TCP packet information on to
 
 		receiveTCPPacket >> clientReceivesTCPPacket; // pass data from TCP packet received to the string
-		//std::cout << "Client receives TCP packet" << clientReceivesTCPPacket << std::endl; // output data received from the SERVER
+		std::cout << "Client receives TCP packet" << clientReceivesTCPPacket << std::endl; // output data received from the SERVER
 		if (clientReceivesTCPPacket._Equal("Welcome to SERVER"))
 		{
 			int pID;
@@ -220,12 +224,12 @@ void P2P::clientSetup()
 		}
 		if (clientReceivesTCPPacket._Equal("-HostHasLeft-"))
 		{
-			setIsHost(true);
-			tcpListeningCheck();
-			tcpStatusCheck();
+				setIsHost(true);
+				tcpListeningCheck();
+				tcpStatusCheck();
 
-			udpBindServer();
-			udpBindClient();
+				udpBindServer();
+				udpBindClient();
 		}
 		if (clientReceivesTCPPacket._Equal("playerjoinedServer"))
 		{
@@ -240,6 +244,7 @@ void P2P::clientSetup()
 			Tank* tank = new Tank("blue", 90, input);
 			tank->setPosition(tankX, tankY);
 			tank->setTankID(playerID);
+			
 			tanks.push_back(tank);
 
 			for (auto& t : tanks) {
@@ -379,7 +384,18 @@ void P2P::udpBindClient() // binding UDP socket on the client side to any port a
 	sf::Packet uDPPacket;
 	if (!getIsHost())
 	{
-		tanks[0]->setPosition(windowWidth - 80, windowHeight / 2);
+		if (isPlayerTwo)
+		{
+			tanks[0]->setPosition(windowWidth - 80, windowHeight / 2);
+		}
+		if (isPlayerThree)
+		{
+			tanks[0]->setPosition(windowWidth / 2, 40);
+		}
+		if (isPlayerFour)
+		{
+			tanks[0]->setPosition(windowWidth / 2, windowHeight - 80);
+		}
 	}
 	int tankX = tanks[0]->getPosition().x;
 	int tankY = tanks[0]->getPosition().y;

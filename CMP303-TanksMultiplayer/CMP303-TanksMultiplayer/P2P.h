@@ -36,6 +36,10 @@ private:
 	sf::UdpSocket udpSocketClient; // UDP socket for CLIENT
 
 	bool isHost; // Bool to determine the host. If a host already exists then set to false and stop programme from listening for clients
+	bool isPlayerTwo;
+	bool isPlayerThree;
+	bool isPlayerFour;
+	int maxPlayers;
 	std::string hasJoined;
 
 	std::vector<Tank*>& tanks; // Vector pointer of tank pointers
