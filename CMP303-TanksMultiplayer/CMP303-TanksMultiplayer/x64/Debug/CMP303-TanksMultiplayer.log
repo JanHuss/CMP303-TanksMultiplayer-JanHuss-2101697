@@ -1,6 +1,13 @@
-﻿  LevelManager.cpp
+﻿  Floor.cpp
+  Font.cpp
+D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Font.cpp(15,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Font.cpp(15,30): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Input.cpp
+  LevelManager.cpp
 D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\LevelManager.cpp(18,36): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
 D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\LevelManager.cpp(19,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  main.cpp
+  NetworkSimulator.cpp
   P2P.cpp
 D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\P2P.cpp(17,57): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
@@ -83,6 +90,5 @@ D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMu
 D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(24,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(132,37): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\CMP303-TanksMultiplayer\Tank.cpp(132,37): warning C4267: 'initializing': conversion from 'size_t' to 'const int', possible loss of data
-  main.cpp
   Generating Code...
   CMP303-TanksMultiplayer.vcxproj -> D:\UniWork\Year 03\CMP303\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer-JanHuss-2101697\CMP303-TanksMultiplayer\x64\Debug\CMP303-TanksMultiplayer.exe
