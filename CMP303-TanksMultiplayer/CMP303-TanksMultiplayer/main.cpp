@@ -3,6 +3,7 @@
 #include "LevelManager.h"
 #include "Framework/Input.h"
 
+
 int main() {
 	//variables
 	int windowWidth = 640;
@@ -27,10 +28,13 @@ int main() {
 
 	//When are we next printing the predicted position (so we don't spam the console)
 	float nextPrint = startTime;
-	
+	float currentTime = 0;
 	while (window.isOpen()) {
 		//Get the time since the last frame in milliseconds
 		float dt = clock.restart().asSeconds() * gameSpeed;
+		currentTime += dt;
+
+		level.p2p->currentTime = currentTime;
 
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -38,14 +42,23 @@ int main() {
 				window.close();
 			if (event.type == sf::Event::KeyPressed) 
 			{
-				level.tanks[0]->handleInput(dt, *level.p2p);
+				level.tanks[0]->handleInput(dt, currentTime, *level.p2p);
 				//level.p2p->sendTCPPacketServer(level.tanks[0]->movementPacket, level.p2p->client[0]);
 				if (event.key.code == sf::Keyboard::Key::Escape)
 				{
-					// when the while loop ends send over the packet information to a client to let them know they are now the host
 					sf::Packet tcpPacket;
 					tcpPacket << "-HostHasLeft-";
 					level.p2p->sendTCPPacketServer(tcpPacket, level.p2p->client[1]);
+					std::string disconnect = "Disconnect";
+					sf::Packet hostDisconnect;
+					hostDisconnect << disconnect;
+					// Notify both SERVER and CLIENTS that the HOST has disconnected
+					for (auto& c: level.p2p->client)
+					{
+						level.p2p->sendTCPPacketServer(hostDisconnect, c);
+					}
+
+					// when the while loop ends send over the packet information to a client to let them know they are now the host
 					window.close();
 				}
 			

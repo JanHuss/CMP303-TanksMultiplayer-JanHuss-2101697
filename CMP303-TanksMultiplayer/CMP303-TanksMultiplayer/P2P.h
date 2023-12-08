@@ -17,12 +17,7 @@ struct Client // Struct that holds all client data. All information that needs t
 							// this functions as an ID to be passed on and determines who is which player
 	sf::Vector2f playerPos; // To store tanks coordinates
 };
-struct Prediction
-{
-	int pTankX;
-	int pTankY;
-	float gameTime;
-};
+
 
 class P2P
 {
@@ -48,12 +43,20 @@ private:
 	int windowWidth;
 	int windowHeight;
 
+	// Tank rotation variables
+	int goNorth;
+	int goSouth;
+	int goEast;
+	int goWest;
+
 public:
 	P2P(std::vector<Tank*>& t, Input* in, int winW, int winH);
 	~P2P();
 
 	std::vector<Client*> client; // Vector of client pointers that will be pushed back once a client joins at which point the client vector element is assigned to the client struct ID
-	std::vector<Prediction*> prediction;
+
+	float currentTime;
+
 	// --- Peer to Peer Architecture ---
 	void HostClientArchitecture();	// Structure that runs the HOST/CLIENT networking system.
 									// First the network will check if the there is a HOST/SERVER available.
@@ -81,6 +84,9 @@ public:
 	sf::Packet recieveUDPPacketClient(); // Recieve UDP packet information from SERVER
 	sf::Packet recieveUDPPacketServer(); // Recieve UDP packet information from CLIENT
 	
+	// --- Prediction ---
+	Prediction* prediction(Tank* t);
+
 	// --- Setters ---
 	void setIsHost(bool iH);
 

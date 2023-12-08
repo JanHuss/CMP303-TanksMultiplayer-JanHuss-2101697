@@ -8,6 +8,11 @@ P2P::P2P(std::vector<Tank*>& t, Input* in, int winwW, int winH) : tanks(t), inpu
 	isPlayerThree = false;
 	isPlayerFour = false;
 	maxPlayers = 4;
+
+	goNorth = 180;
+	goSouth = 0;
+	goEast = 270;
+	goWest = 90;
 }
 P2P::~P2P()
 {
@@ -81,7 +86,7 @@ void P2P::serverSetup()
 			if (playerID != c->playerID)
 			{
 				sf::Packet playerDataTwo;
-				playerDataTwo << "playerjoinedServer" << c->playerPos.x << c->playerPos.y << c->playerID;
+				playerDataTwo << "playerJoinedServer" << c->playerPos.x << c->playerPos.y << c->playerID;
 				sendTCPPacketServer(playerDataTwo, playerClient);
 			}
 		}
@@ -107,7 +112,7 @@ void P2P::serverSetup()
 				std::string clientEntersRoom; // Create a string for the receiving packet to unload on
 				packet >> clientEntersRoom; // Pass packet information to string
 				std::cout << "Client enters room TCP" << clientEntersRoom << std::endl; // Output received data which should be PlayerJoined
-
+				
 				if (clientEntersRoom._Equal("PlayerJoined")) // Check if the string is equal to the string of the socket that binds the UDP SERVER function
 				{
 					int tankX;
@@ -123,7 +128,7 @@ void P2P::serverSetup()
 						if (c->playerID != cTwo->playerID)
 						{
 							sf::Packet playerData;
-							playerData << "playerjoinedServer" << c->playerPos.x << c->playerPos.y << c->playerID;
+							playerData << "playerJoinedServer" << c->playerPos.x << c->playerPos.y << c->playerID;
 
 							sendTCPPacketServer(playerData, cTwo);
 						}
@@ -158,9 +163,10 @@ void P2P::serverSetup()
 
 				if (clientData._Equal("PlayerMovement"))
  				{
-					sf::Vector2f velocity;
+					sf::Vector2f speed;
 					int tankID;
-					uDPPacket >> tankX >> tankY >> velocity.x >> velocity.y >> tankID; // pass data from received packet to the unsigned short variable
+					float rotation;
+					uDPPacket >> tankX >> tankY >> rotation >> speed.x >> speed.y >> tankID; // pass data from received packet to the unsigned short variable
 					c->playerPos.x = tankX;
 					c->playerPos.y = tankY;
 
@@ -178,7 +184,7 @@ void P2P::serverSetup()
 						{
 							sf::Packet playerData;
 							
-							playerData << "PlayerMovement" << c->playerPos.x << c->playerPos.y << velocity.x << velocity.y << tankID;
+							playerData << "PlayerMovement" << c->playerPos.x << c->playerPos.y << rotation << speed.x << speed.y << tankID;
 							
 							sendUDPPacketServer(playerData, cTwo);
 						}
@@ -209,7 +215,7 @@ void P2P::clientSetup()
 		sendTCPPacket << "--- CLIENT TO SERVER ---> PACKET ---> TCP ---> Hi, I'm A CLIENT. I hope you don't mind me joining =)\n"; // put a test string into packet which will let the SERVER know that a CLIENT has joined
 		sendPacketClient(sendTCPPacket); // send packet to SERVER via TCP
 
-		// --- Packet CLIENT side TCP: RECIEVING --- 
+		// --- Packet CLIENT side TCP: RECEIVING --- 
 		sf::Packet receiveTCPPacket = recieveTCPPacketClient(tcpSocket); // create a packet to receive via TCP and set the receive via TCP function for the CLIENT with the assigned TCP socket as an argument to that packet
 		std::string clientReceivesTCPPacket; // string to unload the TCP packet information on to
 
@@ -222,16 +228,24 @@ void P2P::clientSetup()
 			tanks[0]->setTankID(pID);
 			std::cout << "your id is: " << pID << std::endl;
 		}
+		if (clientReceivesTCPPacket._Equal("Disconnect"))
+		{
+			tcpSocket.disconnect();
+			socketSelector.remove(tcpSocket);
+			socketSelector.remove(udpSocketClient);
+			tcpStatusCheck();
+			udpBindClient();
+		}
 		if (clientReceivesTCPPacket._Equal("-HostHasLeft-"))
 		{
 				setIsHost(true);
 				tcpListeningCheck();
-				tcpStatusCheck();
+				//tcpStatusCheck();
 
 				udpBindServer();
-				udpBindClient();
+				//udpBindClient();
 		}
-		if (clientReceivesTCPPacket._Equal("playerjoinedServer"))
+		if (clientReceivesTCPPacket._Equal("playerJoinedServer"))
 		{
 		// add client tank
 		/*if (!isHost)
@@ -239,7 +253,7 @@ void P2P::clientSetup()
 			int playerID;
 			float tankX;
 			float tankY;
-			sf::Vector2f velocity;
+			sf::Vector2f speed;
 			receiveTCPPacket >> tankX >> tankY >> playerID;
 			Tank* tank = new Tank("blue", 90, input);
 			tank->setPosition(tankX, tankY);
@@ -256,14 +270,12 @@ void P2P::clientSetup()
 		//}
 
 		}
-
 	}
 	if (socketSelector.isReady(udpSocketClient)) // This function must be used after a call to Wait, to know if UDP sockets are ready to receive data.
 	{
-		// --- PackeT CLIENT side UDP: RECIEVING ---	
-		sf::Packet udpPacket;
+		// --- Packet CLIENT side UDP: RECEIVING ---
 		std::string clientData; // string to move the CLIENT information received via UDP 
-		udpPacket = recieveUDPPacketClient(); // move the received UDP packet information onto the string
+		sf::Packet udpPacket = recieveUDPPacketClient(); // move the received UDP packet information onto the string
 		udpPacket >> clientData;
 		if (clientData.empty())
 		{
@@ -273,11 +285,21 @@ void P2P::clientSetup()
 		{
 			float tankX;
 			float tankY;
+			float rotation;
 			int tankID;
-			sf::Vector2f velocity;
-			udpPacket >> tankX >> tankY >> velocity.x >> velocity.y >> tankID;
+			sf::Vector2f speed;
+			udpPacket >> tankX >> tankY >> rotation >> speed.x >> speed.y >> tankID;
 			Tank* t = getTank(tankID);
 			t->setPosition(tankX, tankY);
+			t->setRotation(rotation);
+			t->predictions.push_back(new Prediction(currentTime, sf::Vector2f(tankX, tankY), speed));
+
+			if (t->predictions.size() > 3)
+			{
+				t->predictions.pop_front();
+			}
+			Prediction* p = prediction(t);
+			t->setGhostPosition(p->tankPos);
 		}
 		//std::cout << "Client reives UDP packet: " << clientData << std::endl; // output the received data
 	}
@@ -304,8 +326,8 @@ void P2P::tcpStatusCheck() // CLIENT - attempts to connect to tcp socket
 	{
 		std::cout << "Error -- CLIENT --- TCP ---> Cannot bind to TCP socket" << std::endl; // error message if TCP socket fails to bind
 	}
-
-	std::cout << "-- CLIENT --- TCP ---> TCP socket is binding" << std::endl;
+	
+	std::cout << "-- CLIENT --- TCP ---> TCP socket is binding" << tcpSocketStatus <<  std::endl;
 }
 
 // --- TCP Sending/Recieving ---
@@ -315,6 +337,13 @@ void P2P::sendPacketClient(sf::Packet p)
 	if (status != sf::Socket::Done) // if the data sent is not 0 then the data will only be partially have been sent or not at all
 	{
 		std::cout << "!!! Error --- PACKET ---> TCP ---> Cannot send data !!!" << std::endl; // output error if the status is not 0
+		
+		//setIsHost(true);
+		//
+		//tcpListeningCheck();
+		//tcpStatusCheck();
+		//udpBindServer();
+		//udpBindClient();
 	}
 }
 void P2P::sendTCPPacketServer(sf::Packet p, Client* pCP)	// Send a packet from the SERVER to the CLIENT with the dedicated ID which is being passed through as a pCP argument
@@ -387,14 +416,17 @@ void P2P::udpBindClient() // binding UDP socket on the client side to any port a
 		if (isPlayerTwo)
 		{
 			tanks[0]->setPosition(windowWidth - 80, windowHeight / 2);
+			tanks[0]->setRotation(goWest);
 		}
 		if (isPlayerThree)
 		{
 			tanks[0]->setPosition(windowWidth / 2, 40);
+			tanks[0]->setRotation(goSouth);
 		}
 		if (isPlayerFour)
 		{
 			tanks[0]->setPosition(windowWidth / 2, windowHeight - 80);
+			tanks[0]->setRotation(goNorth);
 		}
 	}
 	int tankX = tanks[0]->getPosition().x;
@@ -456,6 +488,32 @@ sf::Packet P2P::recieveUDPPacketServer() // Reiceive information from the CLIENT
 		}
 	}
 	return recieveUDPPacket; // return whatever was received 
+}
+// --- Prediction ---
+Prediction* P2P::prediction(Tank* t)
+{
+	// S = ut + 1/2at^2
+
+	if (t->predictions.size() < 2)
+	{
+		if (!t->predictions.empty())
+		{
+			return t->predictions.back();
+		}
+		return new Prediction(0, sf::Vector2f(0,0), sf::Vector2f(0,0));
+	}
+	Prediction& nextPrediction = *t->predictions.back();
+	Prediction& prevPrediction = *t->predictions.at(t->predictions.size() - 2);
+
+	float currentTime = nextPrediction.gameTime;
+	float prevTime = prevPrediction.gameTime;
+
+	float alpha = currentTime - prevTime;
+	Prediction* prediction = new Prediction();
+	prediction->tankPos.x = prevPrediction.tankPos.x + alpha * (nextPrediction.tankPos.x - prevPrediction.tankPos.x);
+	prediction->tankPos.y = prevPrediction.tankPos.y + alpha * (nextPrediction.tankPos.y - prevPrediction.tankPos.y);
+
+	return prediction;
 }
 
 void P2P::setIsHost(bool iH)

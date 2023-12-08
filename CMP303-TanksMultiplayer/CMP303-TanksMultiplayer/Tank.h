@@ -1,4 +1,5 @@
 #pragma once
+#include <deque>
 #include <SFML\Graphics.hpp>
 #include <SFML\Network.hpp>
 #include <vector>
@@ -7,12 +8,30 @@
 #include "Framework/Input.h"
 #include <iostream>
 
+struct Prediction
+{
+	Prediction()
+	{
+		
+	}
+	Prediction(float currentTime, sf::Vector2f tPos, sf::Vector2f tVel)
+	{
+		gameTime = currentTime;
+		tankPos = tPos;
+		tankVel = tVel;
+	}
+	
+	float gameTime;
+	sf::Vector2f tankPos;
+	sf::Vector2f tankVel;
+};
+
 class P2P;
 
 class Tank : public sf::Sprite
 {
 public:
-	Tank(std::string color, int setR, Input* in);
+	Tank(const std::string color, const float setR, Input* in);
 	~Tank();
 
 	enum RenderMode {
@@ -22,7 +41,7 @@ public:
 	};
 
 	void Update(float dt);
-	void handleInput(float dt, P2P& p2p);
+	void handleInput(float dt, float currrentTime, P2P& p2p);
 	const void Render(sf::RenderWindow* window);
 
 	void AddMessage(const TankMessage& msg);
@@ -34,6 +53,8 @@ public:
 	void setTankID(int tID);
 	int getTankID();
 	void Reset();
+
+	std::deque<Prediction*> predictions;
 
 private:
 	sf::Sprite	m_BarrelSprite;
@@ -49,13 +70,14 @@ private:
 	Input* input;
 
 	std::vector<TankMessage> m_Messages;
+	
 	int tankID;
 
-	float speed;
-	int setRotate;
-	int goNorth;
-	int goSouth;
-	int goEast;
-	int goWest;
+	float acceleration;
+	float setRotate;
+	float goNorth;
+	float goSouth;
+	float goEast;
+	float goWest;
 };
 

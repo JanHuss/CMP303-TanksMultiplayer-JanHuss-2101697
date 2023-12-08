@@ -1,7 +1,7 @@
 #include "Tank.h"
 #include "P2P.h"
 
-Tank::Tank(std::string color, int setR, Input* in)
+Tank::Tank(std::string color, const float setR, Input* in)
 {
 	// initialisation
 	setRotate = setR;
@@ -32,9 +32,8 @@ Tank::Tank(std::string color, int setR, Input* in)
 	m_BarrelSprite.setRotation(setRotate);
 	setRotation(setRotate);
 
-	speed = 40.0f;
+	acceleration = 40.0f;
 }
-
 
 Tank::~Tank()
 {
@@ -49,56 +48,51 @@ void Tank::Update(float dt)
 	setPosition( latestMessage.x, latestMessage.y );
 }
 
-void Tank::handleInput(float dt, P2P& p2p)
+void Tank::handleInput(float dt, float currentTime, P2P& p2p)
 {
-	sf::Vector2f previous = getPosition();
+	const sf::Vector2f previousPos = getPosition();
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) // move left
 	{
-		setPosition(getPosition().x + (-speed * dt), getPosition().y);
+		setPosition(getPosition().x + (-acceleration * dt), getPosition().y);
 		// set player rotation
 		m_BarrelSprite.setRotation(goWest);
 		setRotation(goWest);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) // move right
 	{
-		setPosition(getPosition().x + (speed * dt), getPosition().y);
+		setPosition(getPosition().x + (acceleration * dt), getPosition().y);
 		// set player rotation
 		m_BarrelSprite.setRotation(goEast);
 		setRotation(goEast);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) // move up
 	{
-		setPosition(getPosition().x, getPosition().y + (-speed * dt));
+		setPosition(getPosition().x, getPosition().y + (-acceleration * dt));
 		// set player rotation
 		m_BarrelSprite.setRotation(goNorth);
 		setRotation(goNorth);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) // move down
 	{
-		setPosition(getPosition().x, getPosition().y + (speed * dt));
+		setPosition(getPosition().x, getPosition().y + (acceleration * dt));
 		// set player rotation
 		m_BarrelSprite.setRotation(goSouth);
 		setRotation(goSouth);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) // fire canon
-	{
-		std::cout << "Fire Canon!!!" << std::endl;
-	}
-	sf::Vector2f velocity = previous - getPosition();
+	const sf::Vector2f distance = previousPos - getPosition();
 	
+	// S = ut + 1/2at^2
+	// S = displacement
+	//sf::Vector2f displacement = speed * presentTime + 0.5 * acceleration * (presentTime) ^ 2;
+
 	sf::Packet movementPacket;
-	std::string playerMovement = "PlayerMovement";
-	movementPacket << playerMovement << getPosition().x << getPosition().y << velocity.x << velocity.y << tankID;
+	const std::string playerMovement = "PlayerMovement";
+	movementPacket << playerMovement << getPosition().x << getPosition().y << getRotation() << distance.x << distance.y << tankID;
 	p2p.sendUDPPacketClient(movementPacket);
 }
 
-//void Tank::setPosition( float x, float y ) {
-//	sf::Sprite::setPosition(x, y);
-//	m_BarrelSprite.setPosition(getPosition());
-//}
-
-//Use this to set the prediction position
+//Use this to set the predictions position
 void Tank::setGhostPosition( sf::Vector2f pos ) {
 	m_GhostSprite.setPosition( pos );
 }
@@ -119,7 +113,7 @@ void Tank::AddMessage(const TankMessage & msg) {
 }
 
 //This method calculates and stores the position, but also returns it immediately for use in the main loop
-//This is my where prediction would be... IF I HAD ANY
+//This is my where predictions would be... IF I HAD ANY
 sf::Vector2f Tank::RunPrediction(float gameTime) {
 	float predictedX = -1.0f;
 	float predictedY = -1.0f;
@@ -132,7 +126,7 @@ sf::Vector2f Tank::RunPrediction(float gameTime) {
 	const TankMessage& msg1 = m_Messages[msize - 2];
 	const TankMessage& msg2 = m_Messages[msize - 3];
 	
-	// FIXME: Implement prediction here!
+	// FIXME: Implement predictions here!
 	// You have:
 	// - the history of position messages received, in "m_Messages"
 	//   (msg0 is the most recent, msg1 the 2nd most recent, msg2 the 3rd most recent)
@@ -154,6 +148,6 @@ const void Tank::Render(sf::RenderWindow* window) {
 		window->draw(m_GhostSprite);
 	if (m_RenderMode != 1) {
 		window->draw(*this);
-		window->draw(m_BarrelSprite);
+		//window->draw(m_BarrelSprite);
 	}
 }
