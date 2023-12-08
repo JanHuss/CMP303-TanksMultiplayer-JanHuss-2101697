@@ -12,7 +12,9 @@ struct Prediction
 {
 	Prediction()
 	{
-		
+		gameTime = 0.0f;
+		tankPos = sf::Vector2f(0.0f, 0.0f);
+		tankVel = sf::Vector2f(0.0f, 0.0f);
 	}
 	Prediction(float currentTime, sf::Vector2f tPos, sf::Vector2f tVel)
 	{

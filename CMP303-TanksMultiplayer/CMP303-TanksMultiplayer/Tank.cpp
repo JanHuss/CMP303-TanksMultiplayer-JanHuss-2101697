@@ -37,6 +37,17 @@ Tank::Tank(std::string color, const float setR, Input* in)
 
 Tank::~Tank()
 {
+	for (auto p: predictions)
+	{
+		if (p)
+		{
+			p = nullptr;
+		}
+	}
+	if (input)
+	{
+		input = nullptr;
+	}
 }
 
 //Sets the tank's position to the latest network position

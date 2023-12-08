@@ -32,6 +32,25 @@ LevelManager::LevelManager(Input* in, int windowW, int windowH)
 
 LevelManager::~LevelManager()
 {
+	for(auto t : tanks)
+	{
+		if(t)
+		{
+			t = nullptr;
+		}
+	}
+	if (input)
+	{
+		input = nullptr;
+	}
+	if (floor)
+	{
+		floor = nullptr;
+	}
+	if (p2p)
+	{
+		p2p = nullptr;
+	}
 }
 
 void LevelManager::Update(float dt)
