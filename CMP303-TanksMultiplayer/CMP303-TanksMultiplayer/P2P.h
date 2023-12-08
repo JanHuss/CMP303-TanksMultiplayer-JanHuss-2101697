@@ -56,7 +56,7 @@ public:
 	std::vector<Client*> client; // Vector of client pointers that will be pushed back once a client joins at which point the client vector element is assigned to the client struct ID
 
 	float currentTime;
-
+	bool windowOpen;
 	// --- Peer to Peer Architecture ---
 	void HostClientArchitecture();	// Structure that runs the HOST/CLIENT networking system.
 									// First the network will check if the there is a HOST/SERVER available.

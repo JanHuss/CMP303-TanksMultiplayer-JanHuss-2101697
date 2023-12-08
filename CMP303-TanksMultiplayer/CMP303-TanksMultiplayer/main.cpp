@@ -29,7 +29,7 @@ int main() {
 	//When are we next printing the predicted position (so we don't spam the console)
 	float nextPrint = startTime;
 	float currentTime = 0;
-	while (window.isOpen()) {
+	while (window.isOpen() && level.p2p->windowOpen) {
 		//Get the time since the last frame in milliseconds
 		float dt = clock.restart().asSeconds() * gameSpeed;
 		currentTime += dt;
@@ -48,14 +48,9 @@ int main() {
 				{
 					sf::Packet tcpPacket;
 					tcpPacket << "-HostHasLeft-";
-					level.p2p->sendTCPPacketServer(tcpPacket, level.p2p->client[1]);
-					std::string disconnect = "Disconnect";
-					sf::Packet hostDisconnect;
-					hostDisconnect << disconnect;
-					// Notify both SERVER and CLIENTS that the HOST has disconnected
-					for (auto& c: level.p2p->client)
+					for (int i = 0; i < level.p2p->client.size(); i++)
 					{
-						level.p2p->sendTCPPacketServer(hostDisconnect, c);
+						level.p2p->sendTCPPacketServer(tcpPacket, level.p2p->client[i]);
 					}
 
 					// when the while loop ends send over the packet information to a client to let them know they are now the host

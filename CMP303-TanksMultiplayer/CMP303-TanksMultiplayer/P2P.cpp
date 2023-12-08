@@ -13,6 +13,8 @@ P2P::P2P(std::vector<Tank*>& t, Input* in, int winwW, int winH) : tanks(t), inpu
 	goSouth = 0;
 	goEast = 270;
 	goWest = 90;
+
+	windowOpen = true;
 }
 P2P::~P2P()
 {
@@ -238,12 +240,7 @@ void P2P::clientSetup()
 		}
 		if (clientReceivesTCPPacket._Equal("-HostHasLeft-"))
 		{
-				setIsHost(true);
-				tcpListeningCheck();
-				//tcpStatusCheck();
-
-				udpBindServer();
-				//udpBindClient();
+			windowOpen = false;
 		}
 		if (clientReceivesTCPPacket._Equal("playerJoinedServer"))
 		{
